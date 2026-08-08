@@ -231,7 +231,6 @@ Distributed under the **MIT License**. See `LICENSE` for more details.
 
 <div align="center">
 
-Made with ❤️ by [Alhaj Baig](https://github.com/alhajbaig) & the AI Community.
 
 ⭐ **Star this repository if you find it helpful!** ⭐
 
