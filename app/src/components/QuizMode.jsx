@@ -42,8 +42,6 @@ export default function QuizMode({ levelId }) {
       setFinished(true)
       if (res.passed) {
         if (playCompletionSound) playCompletionSound()
-      } else {
-        if (playWrongSound) playWrongSound()
       }
     } else {
       setScore(newScore)

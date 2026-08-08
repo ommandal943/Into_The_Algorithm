@@ -611,6 +611,351 @@ function initPlayground() {
         ];
         defaultData.forEach(d => createManualRow(d[0], d[1], d[2]));
     }
+
+    // Event Listeners
+    const csvInput = document.getElementById('csvFileInput');
+    const uploadZone = document.getElementById('uploadZone');
+    if (csvInput) {
+        csvInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const parsed = parseCSV(ev.target.result);
+                        window._csvParsed = parsed;
+                        renderCSVPreview(parsed);
+                        if (uploadZone) uploadZone.style.display = 'none';
+                    } catch (err) {
+                        alert('Error parsing CSV: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
+
+    if (uploadZone) {
+        uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.csv')) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const parsed = parseCSV(ev.target.result);
+                        window._csvParsed = parsed;
+                        renderCSVPreview(parsed);
+                        uploadZone.style.display = 'none';
+                    } catch (err) {
+                        alert('Error parsing CSV: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
+
+    const trainCustomBtn = document.getElementById('trainCustomBtn');
+    if (trainCustomBtn) trainCustomBtn.addEventListener('click', trainCustomTreeModel);
+
+    const predictBtn = document.getElementById('predictBtn');
+    if (predictBtn) predictBtn.addEventListener('click', predictCustomTreePoint);
+}
+
+// ─── Playground : Custom CSV Parsing & Decision Tree Execution ──
+function parseCSV(text) {
+    const lines = text.trim().split(/\r?\n/);
+    if (lines.length < 2) throw new Error('CSV must have a header row + data.');
+    const delim = lines[0].includes('\t') ? '\t' : ',';
+    const headers = lines[0].split(delim).map(h => h.trim().replace(/^"|"$/g, ''));
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const cells = lines[i].split(delim).map(c => c.trim().replace(/^"|"$/g, ''));
+        if (cells.length === headers.length) rows.push(cells);
+    }
+    return { headers, rows };
+}
+
+function renderCSVPreview(parsed) {
+    const preview = document.getElementById('csvPreview');
+    const x1Sel = document.getElementById('x1ColSelect');
+    const x2Sel = document.getElementById('x2ColSelect');
+    const labelSel = document.getElementById('labelColSelect');
+    const tableDiv = document.getElementById('csvTablePreview');
+
+    if (!preview || !tableDiv) return;
+
+    if (x1Sel && x2Sel && labelSel) {
+        x1Sel.innerHTML = '';
+        x2Sel.innerHTML = '';
+        labelSel.innerHTML = '';
+        parsed.headers.forEach((h, i) => {
+            x1Sel.innerHTML += `<option value="${i}">${h}</option>`;
+            x2Sel.innerHTML += `<option value="${i}" ${i === 1 ? 'selected' : ''}>${h}</option>`;
+            labelSel.innerHTML += `<option value="${i}" ${i === (parsed.headers.length - 1) ? 'selected' : ''}>${h}</option>`;
+        });
+        if (parsed.headers.length > 1) x2Sel.value = '1';
+        if (parsed.headers.length > 2) labelSel.value = String(parsed.headers.length - 1);
+    }
+
+    let html = '<table><thead><tr>';
+    parsed.headers.forEach(h => html += `<th>${h}</th>`);
+    html += '</tr></thead><tbody>';
+    const maxRows = Math.min(parsed.rows.length, 50);
+    for (let i = 0; i < maxRows; i++) {
+        html += '<tr>';
+        parsed.rows[i].forEach(c => html += `<td>${c}</td>`);
+        html += '</tr>';
+    }
+    if (parsed.rows.length > 50) html += `<tr><td colspan="${parsed.headers.length}" style="text-align:center;color:var(--text-muted);">... ${parsed.rows.length - 50} more rows</td></tr>`;
+    html += '</tbody></table>';
+    tableDiv.innerHTML = html;
+    preview.style.display = 'block';
+}
+
+let customTreeModel = null;
+
+function trainCustomTreeModel() {
+    let rawPoints = [];
+    const activeTab = document.querySelector('.tab-content.active')?.id;
+
+    if (activeTab === 'tab-csv') {
+        const x1Idx = parseInt(document.getElementById('x1ColSelect')?.value);
+        const x2Idx = parseInt(document.getElementById('x2ColSelect')?.value);
+        const lIdx = parseInt(document.getElementById('labelColSelect')?.value);
+
+        if (isNaN(x1Idx) || isNaN(x2Idx) || isNaN(lIdx)) {
+            alert('Please select X1, X2, and Label columns.');
+            return;
+        }
+
+        if (!window._csvParsed || !window._csvParsed.rows.length) {
+            alert('Please upload a valid CSV file first.');
+            return;
+        }
+
+        window._csvParsed.rows.forEach(r => {
+            const v1 = parseFloat(r[x1Idx]);
+            const v2 = parseFloat(r[x2Idx]);
+            let lblRaw = r[lIdx];
+            let lbl = parseFloat(lblRaw);
+            if (isNaN(lbl)) {
+                lbl = (String(lblRaw).toLowerCase().includes('1') || String(lblRaw).toLowerCase().includes('true') || String(lblRaw).toLowerCase().includes('pos')) ? 1 : 0;
+            } else {
+                lbl = lbl > 0.5 ? 1 : 0;
+            }
+
+            if (!isNaN(v1) && !isNaN(v2)) {
+                rawPoints.push({ x1: v1, x2: v2, label: lbl });
+            }
+        });
+    } else {
+        const rows = document.querySelectorAll('#manualRows .manual-row');
+        rows.forEach(row => {
+            const v1 = parseFloat(row.querySelector('.m-x1')?.value);
+            const v2 = parseFloat(row.querySelector('.m-x2')?.value);
+            const lbl = parseInt(row.querySelector('.m-label')?.value || '0');
+            if (!isNaN(v1) && !isNaN(v2)) {
+                rawPoints.push({ x1: v1, x2: v2, label: lbl });
+            }
+        });
+    }
+
+    if (rawPoints.length === 0) {
+        alert('No valid numeric points found in dataset.');
+        return;
+    }
+
+    const x1Vals = rawPoints.map(p => p.x1);
+    const x2Vals = rawPoints.map(p => p.x2);
+    const min1 = Math.min(...x1Vals), max1 = Math.max(...x1Vals);
+    const min2 = Math.min(...x2Vals), max2 = Math.max(...x2Vals);
+
+    const range1 = max1 - min1 || 1;
+    const range2 = max2 - min2 || 1;
+
+    const processedPoints = rawPoints.map(p => ({
+        x1: p.x1,
+        x2: p.x2,
+        norm1: (p.x1 - min1) / range1,
+        norm2: (p.x2 - min2) / range2,
+        label: p.label
+    }));
+
+    // Build CART Decision Tree
+    function giniImpurity(pts) {
+        if (!pts.length) return 0;
+        const c1 = pts.filter(p => p.label === 1).length;
+        const p1 = c1 / pts.length;
+        const p0 = 1 - p1;
+        return 1 - (p0 * p0 + p1 * p1);
+    }
+
+    let nodeCounter = 0;
+    function buildTree(pts, depth = 0, maxD = 4) {
+        nodeCounter++;
+        const c1 = pts.filter(p => p.label === 1).length;
+        const pred = c1 >= pts.length / 2 ? 1 : 0;
+
+        if (depth >= maxD || pts.length <= 2 || c1 === 0 || c1 === pts.length) {
+            return { isLeaf: true, pred, depth };
+        }
+
+        let bestGini = 1.0;
+        let bestFeature = null;
+        let bestThreshold = null;
+        let bestLeft = [], bestRight = [];
+
+        [0, 1].forEach(feature => {
+            const vals = pts.map(p => feature === 0 ? p.norm1 : p.norm2).sort((a,b) => a - b);
+            for (let i = 0; i < vals.length - 1; i++) {
+                const thresh = (vals[i] + vals[i + 1]) / 2;
+                const left = pts.filter(p => (feature === 0 ? p.norm1 : p.norm2) <= thresh);
+                const right = pts.filter(p => (feature === 0 ? p.norm1 : p.norm2) > thresh);
+                if (!left.length || !right.length) continue;
+
+                const g = (left.length / pts.length) * giniImpurity(left) + (right.length / pts.length) * giniImpurity(right);
+                if (g < bestGini) {
+                    bestGini = g;
+                    bestFeature = feature;
+                    bestThreshold = thresh;
+                    bestLeft = left;
+                    bestRight = right;
+                }
+            }
+        });
+
+        if (bestFeature === null) return { isLeaf: true, pred, depth };
+
+        return {
+            isLeaf: false,
+            feature: bestFeature,
+            threshold: bestThreshold,
+            left: buildTree(bestLeft, depth + 1, maxD),
+            right: buildTree(bestRight, depth + 1, maxD),
+            pred,
+            depth
+        };
+    }
+
+    const rootNode = buildTree(processedPoints);
+
+    function predictNode(node, p) {
+        if (node.isLeaf) return node.pred;
+        const val = node.feature === 0 ? p.norm1 : p.norm2;
+        return val <= node.threshold ? predictNode(node.left, p) : predictNode(node.right, p);
+    }
+
+    function getMaxTreeDepth(node) {
+        if (node.isLeaf) return node.depth;
+        return Math.max(getMaxTreeDepth(node.left), getMaxTreeDepth(node.right));
+    }
+
+    let correct = 0;
+    processedPoints.forEach(p => {
+        if (predictNode(rootNode, p) === p.label) correct++;
+    });
+
+    const accuracy = ((correct / processedPoints.length) * 100).toFixed(1);
+    const treeDepth = getMaxTreeDepth(rootNode);
+
+    customTreeModel = {
+        points: processedPoints,
+        rootNode,
+        min1, max1, range1,
+        min2, max2, range2,
+        predictNode
+    };
+
+    document.getElementById('cMetricAccuracy').textContent = `${accuracy}%`;
+    document.getElementById('cMetricDepth').textContent = treeDepth;
+    document.getElementById('cMetricNodes').textContent = nodeCounter;
+    document.getElementById('customResults').style.display = 'block';
+
+    renderCustomTreeChart(customTreeModel);
+}
+
+function renderCustomTreeChart(model) {
+    const canvas = document.getElementById('cScatterChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement?.clientWidth || 600;
+    canvas.height = 360;
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const padding = 40;
+
+    ctx.clearRect(0, 0, width, height);
+
+    const step = 8;
+    for (let px = padding; px < width - padding; px += step) {
+        for (let py = padding; py < height - padding; py += step) {
+            const norm1 = (px - padding) / (width - 2 * padding);
+            const norm2 = 1 - (py - padding) / (height - 2 * padding);
+
+            const pred = model.predictNode(model.rootNode, { norm1, norm2 });
+
+            ctx.fillStyle = pred === 1 ? 'rgba(59, 130, 246, 0.15)' : 'rgba(245, 158, 11, 0.15)';
+            ctx.fillRect(px, py, step, step);
+        }
+    }
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padding, height - padding);
+    ctx.lineTo(width - padding, height - padding);
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(padding, height - padding);
+    ctx.stroke();
+
+    model.points.forEach(p => {
+        const cx = padding + p.norm1 * (width - 2 * padding);
+        const cy = (height - padding) - p.norm2 * (height - 2 * padding);
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx.fillStyle = p.label === 1 ? '#3b82f6' : '#f59e0b';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    });
+}
+
+function predictCustomTreePoint() {
+    if (!customTreeModel) {
+        alert('Please train custom dataset first.');
+        return;
+    }
+    const x1Val = parseFloat(document.getElementById('predictX1')?.value);
+    const x2Val = parseFloat(document.getElementById('predictX2')?.value);
+
+    if (isNaN(x1Val) || isNaN(x2Val)) {
+        alert('Please enter valid numeric X1 and X2 values.');
+        return;
+    }
+
+    const norm1 = (x1Val - customTreeModel.min1) / customTreeModel.range1;
+    const norm2 = (x2Val - customTreeModel.min2) / customTreeModel.range2;
+
+    const predClass = customTreeModel.predictNode(customTreeModel.rootNode, { norm1, norm2 });
+
+    const resDiv = document.getElementById('predictResult');
+    if (resDiv) {
+        resDiv.style.display = 'block';
+        resDiv.innerHTML = `
+            <div style="padding:0.75rem; border-radius:8px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); margin-top:0.75rem;">
+                <span style="font-weight:700; color:${predClass === 1 ? '#3b82f6' : '#f59e0b'};">Decision Tree: Class ${predClass === 1 ? '1 (Blue)' : '0 (Amber)'}</span>
+            </div>
+        `;
+    }
 }
 
 /* ═════════════════════════════════════════════════════════

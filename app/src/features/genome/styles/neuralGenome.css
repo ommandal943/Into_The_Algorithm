@@ -136,38 +136,80 @@
 
 .interactive-gene-nodes-overlay {
   position: absolute;
-  bottom: 1.25rem;
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.6rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 90%;
+  max-width: 92%;
+  z-index: 10;
 }
 
 .gene-helix-chip {
+  appearance: none;
+  -webkit-appearance: none;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.35rem 0.75rem;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid var(--gene-color, rgba(255, 255, 255, 0.2));
-  border-radius: 20px;
-  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--gene-color, rgba(255, 255, 255, 0.15));
+  border-radius: 9999px;
+  color: #e2e8f0;
+  font-family: var(--font-body, system-ui, sans-serif);
   font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.25 ease;
+  outline: none;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .gene-helix-chip:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px var(--gene-color, rgba(56, 189, 248, 0.4));
+  background: rgba(30, 41, 59, 0.85);
+  border-color: var(--gene-color, #38bdf8);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px var(--gene-color, rgba(56, 189, 248, 0.35));
+}
+
+.gene-helix-chip:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .gene-helix-chip.active {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.9);
+  border-color: var(--gene-color, #38bdf8);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 0 16px var(--gene-color, rgba(56, 189, 248, 0.4)), inset 0 0 8px var(--gene-color, rgba(56, 189, 248, 0.25));
+}
+
+.gene-helix-chip .gene-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--gene-color, #38bdf8);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.gene-helix-chip.active .gene-symbol,
+.gene-helix-chip:hover .gene-symbol {
+  background: var(--gene-color, #38bdf8);
+  color: #0f172a;
 }
 
 /* 6 Core Chromosomes Grid */

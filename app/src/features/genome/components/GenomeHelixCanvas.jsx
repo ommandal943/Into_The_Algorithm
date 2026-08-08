@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Dna, Sparkles, CheckCircle2, Lock, Zap } from 'lucide-react'
+import '../styles/neuralGenome.css'
 
 export function GenomeHelixCanvas({ genes = [], onSelectGene }) {
   const canvasRef = useRef(null)

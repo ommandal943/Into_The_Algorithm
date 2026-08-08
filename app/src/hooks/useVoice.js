@@ -27,18 +27,21 @@ export function useVoice() {
       try {
         if (typeof window === 'undefined') return
         stopActiveAudio()
-        const audio = new Audio(soundUrl)
-        audio.volume = volume
-        audioRef.current = audio
-        activeAudioRef.current = audio
-        const playPromise = audio.play()
+        if (!audioRef.current) {
+          audioRef.current = new Audio(soundUrl)
+        } else {
+          audioRef.current.currentTime = 0
+        }
+        audioRef.current.volume = volume
+        activeAudioRef.current = audioRef.current
+        const playPromise = audioRef.current.play()
         if (playPromise !== undefined) {
-          playPromise.catch((e) => {
-            console.warn('Audio playback failure:', e)
+          playPromise.catch(() => {
+            /* Handle browser autoplay policy fallback */
           })
         }
-      } catch (e) {
-        console.warn('Audio playback exception:', e)
+      } catch {
+        /* Ignore audio error */
       }
     },
     [stopActiveAudio],

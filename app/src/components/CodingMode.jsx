@@ -55,7 +55,6 @@ export default function CodingMode({ levelId }) {
       if (res.length && res.every((r) => r.ok)) {
         completeCoding(levelId, problem.id)
         if (playCorrectSound) playCorrectSound()
-        cheer('coding')
       } else {
         if (playWrongSound) playWrongSound()
       }
