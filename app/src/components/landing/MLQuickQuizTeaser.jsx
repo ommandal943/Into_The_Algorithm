@@ -70,7 +70,7 @@ export default function MLQuickQuizTeaser() {
           </div>
           <h2>Test Your <em>ML IQ</em> Right Now</h2>
           <p className="playground-desc">
-            Take a quick sample question from our 10-level ML Interview Quest. Instant feedback with detailed theoretical explanations!
+            Take a quick sample question from our 100-level ML Interview Quest. Instant feedback with detailed theoretical explanations!
           </p>
         </div>
 
@@ -151,7 +151,7 @@ export default function MLQuickQuizTeaser() {
                     Next Question →
                   </button>
                   <Link to="/quest" className="btn quest-link-btn">
-                    Launch Full 10-Level Quest <ArrowRight size={15} />
+                    Launch Full 100-Level Quest <ArrowRight size={15} />
                   </Link>
                 </div>
               </motion.div>

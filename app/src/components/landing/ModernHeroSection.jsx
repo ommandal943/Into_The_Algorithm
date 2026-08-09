@@ -7,7 +7,7 @@ const HERO_PHRASES = [
   'Interactive 3D Sigmoidal Hyperplanes 🔮',
   'Random Forest Bagging & Gini Splits 🌲',
   'Gradient Descent Loss Landscapes 📉',
-  '10-Level Gamified ML Quests 🎮'
+  '100-Level Gamified ML Quests 🎮'
 ]
 
 export default function ModernHeroSection() {
@@ -113,7 +113,7 @@ export default function ModernHeroSection() {
         <Link to="/quest" className="modern-btn-secondary" data-magnetic data-gsap="hover">
           <Gamepad2 size={18} color="#a78bfa" />
           <span>Launch ML Quest</span>
-          <span className="hero-level-badge">10 Levels</span>
+          <span className="hero-level-badge">100 Levels</span>
         </Link>
 
         <button className="modern-btn-demo" onClick={scrollTo3D} title="Scroll directly to 3D visualizer" data-magnetic data-gsap="hover">
@@ -157,7 +157,7 @@ export default function ModernHeroSection() {
           </div>
           <div className="hero-card-body">
             <h4>Gamified ML Quest</h4>
-            <p>10 campaign levels of quizzes, flashcards, Python coding, and badges.</p>
+            <p>100 campaign levels of quizzes, flashcards, Python coding, and badges.</p>
           </div>
         </div>
 

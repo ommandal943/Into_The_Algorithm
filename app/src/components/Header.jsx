@@ -6,6 +6,9 @@ import { useAuth } from '../context/AuthContext'
 import UserDropdown from './auth/UserDropdown'
 import { motion } from 'framer-motion'
 
+import { NeuralCore3D } from './brand/NeuralCore3D'
+import { NotificationDropdown } from './brand/NotificationDropdown'
+
 export default function Header() {
   const { progress, resetProgress } = useGame()
   const { user } = useAuth()
@@ -51,14 +54,7 @@ export default function Header() {
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
     >
       <Link to="/" className="brand" data-magnetic>
-        <motion.span
-          className="brand-candy"
-          aria-hidden
-          animate={{ rotate: [0, 90, 180, 270, 360] }}
-          transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
-        >
-          ◆
-        </motion.span>
+        <NeuralCore3D />
         <span>
           Into the <em>Algorithm</em>
         </span>
@@ -119,10 +115,7 @@ export default function Header() {
           </div>
 
           {/* Notification Bell */}
-          <button type="button" className="nav-icon-btn" title="Notifications" data-magnetic>
-            <Bell size={16} />
-            <span className="bell-badge-dot" />
-          </button>
+          <NotificationDropdown />
 
           {/* User Profile Dropdown */}
           <UserDropdown />

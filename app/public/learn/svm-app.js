@@ -818,10 +818,14 @@ function trainCustomSVMModel() {
         min2, max2, range2
     };
 
-    document.getElementById('cMetricAccuracy').textContent = `${accuracy}%`;
-    document.getElementById('cMetricMargin').textContent = margin;
-    document.getElementById('cMetricSV').textContent = svCount || Math.min(3, processedPoints.length);
-    document.getElementById('customResults').style.display = 'block';
+    const elAcc = document.getElementById('cMetricAccuracy');
+    if (elAcc) elAcc.textContent = `${accuracy}%`;
+    const elMarg = document.getElementById('cMetricMargin');
+    if (elMarg) elMarg.textContent = margin;
+    const elSV = document.getElementById('cMetricSV');
+    if (elSV) elSV.textContent = svCount || Math.min(3, processedPoints.length);
+    const customRes = document.getElementById('customResults');
+    if (customRes) customRes.style.display = 'block';
 
     renderCustomSVMChart(customSVMModel);
 }
@@ -901,6 +905,38 @@ function predictCustomSVMPoint() {
         resDiv.innerHTML = `
             <div style="padding:0.75rem; border-radius:8px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); margin-top:0.75rem;">
                 <span style="font-weight:700; color:${predClass === 1 ? '#3b82f6' : '#f59e0b'};">SVM Classifier: Class ${predClass > 0 ? '+1 (Blue)' : '-1 (Amber)'}</span> (Score: ${val.toFixed(2)})
+            </div>
+        `;
+    }
+}
+
+function predictCustomSVMPoint() {
+    if (!customSVMModel) {
+        alert('Please train custom dataset first.');
+        return;
+    }
+    const x1Val = parseFloat(document.getElementById('predictX1')?.value);
+    const x2Val = parseFloat(document.getElementById('predictX2')?.value);
+
+    if (isNaN(x1Val) || isNaN(x2Val)) {
+        alert('Please enter valid numeric X1 and X2 values.');
+        return;
+    }
+
+    const range1 = customSVMModel.range1 || 1;
+    const range2 = customSVMModel.range2 || 1;
+    const norm1 = (x1Val - customSVMModel.min1) / range1;
+    const norm2 = (x2Val - customSVMModel.min2) / range2;
+
+    const val = customSVMModel.w1 * norm1 + customSVMModel.w2 * norm2 + customSVMModel.b;
+    const predClass = val >= 0 ? 1 : -1;
+
+    const resDiv = document.getElementById('predictResult');
+    if (resDiv) {
+        resDiv.style.display = 'block';
+        resDiv.innerHTML = `
+            <div style="padding:0.75rem; border-radius:8px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); margin-top:0.75rem; font-family: var(--font-mono, monospace);">
+                <span style="font-weight:700; color:${predClass === 1 ? '#8b5cf6' : '#ec4899'};">SVM Prediction: Class ${predClass === 1 ? '1 (+1 Purple)' : '0 (-1 Pink)'}</span> (Score: ${val.toFixed(3)})
             </div>
         `;
     }

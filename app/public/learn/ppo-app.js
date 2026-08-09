@@ -269,13 +269,24 @@ function initPPOLab() {
 
     function stepPPO() {
         updateCount++;
-        const score = Math.min(250, Math.round(-80 + updateCount * 11 + (Math.random() - 0.5) * 20));
-        const clipFrac = (Math.max(1.2, 12.0 * Math.exp(-updateCount / 10))).toFixed(1);
+        const epsClip = parseFloat(sliderEps?.value || '0.2');
+        const gaeLambda = parseFloat(sliderLambda?.value || '0.95');
+        const ppoEpochs = parseInt(sliderEpochs?.value || '10');
+
+        // Continuous LunarLander PPO updates with clipped surrogate objective
+        const rawAdvantage = (Math.random() - 0.2) * 5.0 * gaeLambda;
+        const ratio = 1.0 + (Math.random() - 0.5) * 0.4;
+        const clippedRatio = Math.min(Math.max(ratio, 1.0 - epsClip), 1.0 + epsClip);
+        const policyLoss = -Math.min(ratio * rawAdvantage, clippedRatio * rawAdvantage);
+
+        const score = Math.min(280, Math.round(-100 + updateCount * 12 * (1 + (ppoEpochs / 20)) + (Math.random() - 0.4) * 15));
+        const clipFrac = (Math.max(0.5, (15.0 * epsClip) * Math.exp(-updateCount / (8 + ppoEpochs * 0.5)))).toFixed(1);
 
         scoreHistory.push(score);
         clipHistory.push(clipFrac);
 
-        landerX = canvas.width * 0.45 + 30 + (Math.random() - 0.5) * 15;
+        // Continuous thruster positioning
+        landerX = canvas.width * 0.45 + 30 + (Math.random() - 0.5) * 12;
         landerY = canvas.height * 0.78 - 14;
 
         renderCanvas();

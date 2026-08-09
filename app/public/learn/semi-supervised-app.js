@@ -444,17 +444,17 @@ function initPlayground() {
     function stepRound() {
         currentRound++;
         let newlyPseudo = 0;
-        const labeled = points.filter(p => p.cls === 0 || p.cls === 1);
+        const labeled = points.filter(p => p.cls === 0 || p.cls === 1 || p.cls === 10 || p.cls === 11);
         if (labeled.length === 0) return;
 
         points.forEach(p => {
             if (p.cls === -1) {
-                // Find nearest labeled neighbor distance
+                // Find nearest labeled neighbor distance (including pseudo-labeled points from previous rounds)
                 let minD0 = Infinity, minD1 = Infinity;
                 labeled.forEach(l => {
                     const d = Math.sqrt((p.x - l.x) ** 2 + (p.y - l.y) ** 2);
-                    if (l.cls === 0 && d < minD0) minD0 = d;
-                    if (l.cls === 1 && d < minD1) minD1 = d;
+                    if ((l.cls === 0 || l.cls === 10) && d < minD0) minD0 = d;
+                    if ((l.cls === 1 || l.cls === 11) && d < minD1) minD1 = d;
                 });
 
                 const conf0 = 1 / (1 + minD0 * 0.02);

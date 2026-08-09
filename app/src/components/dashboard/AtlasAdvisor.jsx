@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import { useGame } from '../../context/GameContext'
 import { LEVELS } from '../../data/content'
 import {
@@ -12,6 +13,7 @@ const sectionV = {
 }
 
 export function AtlasAdvisor() {
+  const navigate = useNavigate()
   const { progress } = useGame()
 
   const clearedCount = progress.clearedLevels?.length || 0
@@ -65,7 +67,7 @@ export function AtlasAdvisor() {
         {/* Recommendations */}
         <div className="cc-advisor-recs">
           {/* Rec 1: Next Action */}
-          <div className="cc-advisor-rec-card">
+          <div className="cc-advisor-rec-card" onClick={() => navigate('/quest/level/' + nextLevel.id)}>
             <div className="cc-rec-icon-box cc-rec-gold">
               <Lightbulb size={16} />
             </div>
@@ -79,7 +81,7 @@ export function AtlasAdvisor() {
           </div>
 
           {/* Rec 2: Weak Area */}
-          <div className="cc-advisor-rec-card">
+          <div className="cc-advisor-rec-card" onClick={() => navigate(improveLevelObj ? '/quest/level/' + improveLevelObj.id : '/quest')}>
             <div className="cc-rec-icon-box cc-rec-purple">
               <AlertTriangle size={16} />
             </div>
@@ -97,7 +99,7 @@ export function AtlasAdvisor() {
           </div>
 
           {/* Rec 3: XP Route */}
-          <div className="cc-advisor-rec-card">
+          <div className="cc-advisor-rec-card" onClick={() => navigate('/quest')}>
             <div className="cc-rec-icon-box cc-rec-cyan">
               <TrendingUp size={16} />
             </div>
@@ -118,6 +120,7 @@ export function AtlasAdvisor() {
             className="cc-advisor-btn cc-advisor-btn-chat"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
+            onClick={() => navigate('/chat')}
           >
             <MessageSquare size={14} />
             <span>Ask ATLAS</span>
@@ -127,6 +130,7 @@ export function AtlasAdvisor() {
             className="cc-advisor-btn cc-advisor-btn-voice"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
+            onClick={() => navigate('/chat', { state: { startVoice: true } })}
           >
             <Mic size={14} />
             <span>Voice</span>

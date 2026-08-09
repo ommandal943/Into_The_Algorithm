@@ -2,9 +2,7 @@
  * NeuralMind CHAT2 — Notes Generator & PDF Export Service
  */
 
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
-const MODEL = 'llama-3.3-70b-versatile'
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions'
+import { callGroqApi, PRIMARY_MODEL } from './groqClient'
 
 const SYSTEM_PROMPT = `You are an expert ML educator creating comprehensive study notes.
 Generate structured, thorough Markdown study notes about the given ML topic.
@@ -50,26 +48,15 @@ export async function generateNotes(topic, options = { math: true, code: true, q
     options.quiz ? 'Include a quiz section with answers.' : 'Skip the quiz section.'
   ].join(' ')
 
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: `Generate comprehensive study notes for: "${topic}"\n\n${optionStr}` }
-      ],
-      temperature: 0.5,
-      max_tokens: 2500
-    })
+  return await callGroqApi({
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: `Generate comprehensive study notes for: "${topic}"\n\n${optionStr}` }
+    ],
+    temperature: 0.5,
+    max_tokens: 2500,
+    model: PRIMARY_MODEL
   })
-
-  if (!res.ok) throw new Error(`Groq API error (${res.status})`)
-  const data = await res.json()
-  return data.choices[0].message.content
 }
 
 export function downloadNotesPdf(topic, htmlContent) {

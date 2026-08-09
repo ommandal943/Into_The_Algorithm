@@ -12,13 +12,20 @@ export function ImageGenModuleComponent() {
   const handleGenerate = async () => {
     if (!prompt.trim() || isLoading) return
     setIsLoading(true)
+
+    // Clean up previous blob URL to prevent memory leaks
+    if (generatedImg?.url && generatedImg.url.startsWith('blob:')) {
+      URL.revokeObjectURL(generatedImg.url)
+    }
+
     try {
       const res = await generateMlImage(prompt, style)
       setGeneratedImg(res)
     } catch (err) {
-      alert(`Error generating image: ${err.message}`)
+      alert(`Image Generation Failed: ${err.message}`)
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (

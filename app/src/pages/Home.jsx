@@ -201,11 +201,11 @@ export default function Home() {
               </div>
               <h3>What It Provides</h3>
               <p>
-                A complete end-to-end interactive suite including 3D Sigmoidal hyperplanes, Random Forest Impurity analyzers, a 10-level gamified Quest, and pure PyTorch code inspectors.
+                A complete end-to-end interactive suite including 3D Sigmoidal hyperplanes, Random Forest Impurity analyzers, a 100-level gamified Quest, and pure PyTorch code inspectors.
               </p>
             </div>
             <ul className="mission-feature-list">
-              <li><CheckCircle2 size={15} /> 10-Level Gamified Interview Campaign</li>
+              <li><CheckCircle2 size={15} /> 100-Level Gamified Interview Campaign</li>
               <li><CheckCircle2 size={15} /> Math Prerequisites &amp; Formula Notes</li>
               <li><CheckCircle2 size={15} /> Pure PyTorch Tensor Backprop Viewer</li>
             </ul>
@@ -286,7 +286,7 @@ export default function Home() {
           <span className="ending-spec-pill">⚡ 100% In-Browser Execution</span>
           <span className="ending-spec-pill">🔮 3D Hyperplane &amp; Surface Mesh Engine</span>
           <span className="ending-spec-pill">🌲 Bagging Forest Impurity Analyzer</span>
-          <span className="ending-spec-pill">🎮 10-Level Gamified Interview Quest</span>
+          <span className="ending-spec-pill">🎮 100-Level Gamified Interview Quest</span>
         </div>
 
         {/* CTA Group */}

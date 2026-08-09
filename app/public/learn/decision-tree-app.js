@@ -872,10 +872,14 @@ function trainCustomTreeModel() {
         predictNode
     };
 
-    document.getElementById('cMetricAccuracy').textContent = `${accuracy}%`;
-    document.getElementById('cMetricDepth').textContent = treeDepth;
-    document.getElementById('cMetricNodes').textContent = nodeCounter;
-    document.getElementById('customResults').style.display = 'block';
+    const elAcc = document.getElementById('cMetricAccuracy');
+    if (elAcc) elAcc.textContent = `${accuracy}%`;
+    const elDepth = document.getElementById('cMetricDepth');
+    if (elDepth) elDepth.textContent = treeDepth;
+    const elNodes = document.getElementById('cMetricNodes');
+    if (elNodes) elNodes.textContent = nodeCounter;
+    const customRes = document.getElementById('customResults');
+    if (customRes) customRes.style.display = 'block';
 
     renderCustomTreeChart(customTreeModel);
 }

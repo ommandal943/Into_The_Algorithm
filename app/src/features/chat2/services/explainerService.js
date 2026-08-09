@@ -2,9 +2,7 @@
  * NeuralMind CHAT2 — Easy Explanation Service
  */
 
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
-const MODEL = 'llama-3.3-70b-versatile'
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions'
+import { callGroqApi, PRIMARY_MODEL } from './groqClient'
 
 const LEVEL_PROMPTS = {
   beginner: `You are a friendly, enthusiastic ML teacher explaining to a complete beginner.
@@ -41,25 +39,13 @@ Format: Dense, technical, no hand-holding`
 export async function explainConcept(topic, level = 'beginner') {
   const systemPrompt = LEVEL_PROMPTS[level] || LEVEL_PROMPTS.beginner
 
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: `Explain this ML concept in depth: "${topic}"` }
-      ],
-      temperature: 0.6,
-      max_tokens: 1400,
-      stream: false
-    })
+  return await callGroqApi({
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: `Explain this ML concept in depth: "${topic}"` }
+    ],
+    temperature: 0.6,
+    max_tokens: 1400,
+    model: PRIMARY_MODEL
   })
-
-  if (!res.ok) throw new Error(`Groq API error (${res.status})`)
-  const data = await res.json()
-  return data.choices[0].message.content
 }

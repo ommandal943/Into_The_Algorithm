@@ -1,7 +1,4 @@
-/* ════════════════════════════════════════════════════════════
-   LOGISTIC REGRESSION — Interactive Educational App
-   All computations run client-side in pure JavaScript
-   ════════════════════════════════════════════════════════════ */
+let currentParsedCSV = null;
 
 // ─── Utility : Logistic Regression Engine ──────────────────
 class LogisticRegression {
@@ -25,6 +22,8 @@ class LogisticRegression {
     }
 
     sigmoid(z) {
+        if (z >= 40) return 1;
+        if (z <= -40) return 0;
         if (z >= 0) return 1 / (1 + Math.exp(-z));
         const ez = Math.exp(z);
         return ez / (1 + ez);
@@ -594,18 +593,36 @@ function parseCSV(text) {
 }
 
 function renderCSVPreview(parsed) {
+    currentParsedCSV = parsed;
     const preview = document.getElementById('csvPreview');
-    const xSel = document.getElementById('xColSelect');
+    const x1Sel = document.getElementById('x1ColSelect') || document.getElementById('xColSelect');
+    const x2Sel = document.getElementById('x2ColSelect');
     const ySel = document.getElementById('yColSelect');
     const tableDiv = document.getElementById('csvTablePreview');
 
-    xSel.innerHTML = '';
-    ySel.innerHTML = '';
-    parsed.headers.forEach((h, i) => {
-        xSel.innerHTML += `<option value="${i}">${h}</option>`;
-        ySel.innerHTML += `<option value="${i}" ${i === 1 ? 'selected' : ''}>${h}</option>`;
-    });
-    if (parsed.headers.length > 1) ySel.value = '1';
+    if (!preview || !tableDiv) return;
+
+    if (x1Sel) {
+        x1Sel.innerHTML = '';
+        parsed.headers.forEach((h, i) => {
+            x1Sel.innerHTML += `<option value="${i}">${h}</option>`;
+        });
+    }
+    if (x2Sel) {
+        x2Sel.innerHTML = '<option value="-1">None (1D Feature)</option>';
+        parsed.headers.forEach((h, i) => {
+            x2Sel.innerHTML += `<option value="${i}" ${i === 1 ? 'selected' : ''}>${h}</option>`;
+        });
+        if (parsed.headers.length > 1) x2Sel.value = '1';
+    }
+    if (ySel) {
+        ySel.innerHTML = '';
+        parsed.headers.forEach((h, i) => {
+            const isLast = i === (parsed.headers.length - 1);
+            ySel.innerHTML += `<option value="${i}" ${isLast ? 'selected' : ''}>${h}</option>`;
+        });
+        if (parsed.headers.length > 0) ySel.value = String(parsed.headers.length - 1);
+    }
 
     let html = '<table><thead><tr>';
     parsed.headers.forEach(h => html += `<th>${h}</th>`);
@@ -625,6 +642,7 @@ function renderCSVPreview(parsed) {
 // ─── Playground : Manual Entry ────────────────────────────
 function addManualRow(xVal = '', yVal = '') {
     const container = document.getElementById('manualRows');
+    if (!container) return;
     const row = document.createElement('div');
     row.className = 'manual-row';
     row.innerHTML = `
@@ -638,12 +656,14 @@ function addManualRow(xVal = '', yVal = '') {
 
 function initManualRows(count = 5) {
     const container = document.getElementById('manualRows');
+    if (!container) return;
     container.innerHTML = '';
     for (let i = 0; i < count; i++) addManualRow();
 }
 
 function loadExampleData() {
     const container = document.getElementById('manualRows');
+    if (!container) return;
     container.innerHTML = '';
     const xs = [10, 20, 30, 40, 45, 50, 55, 60, 70, 80, 90, 95];
     const ys = [0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1];
@@ -654,63 +674,94 @@ function loadExampleData() {
 function trainCustomModel() {
     let xData = [], yData = [], xLabel = 'X', yLabel = 'Y';
 
-    const activeTab = document.querySelector('.tab-content.active').id;
+    const activeTab = document.querySelector('.tab-content.active')?.id || 'tab-csv';
 
     if (activeTab === 'tab-csv') {
-        const xIdx = parseInt(document.getElementById('xColSelect').value);
-        const yIdx = parseInt(document.getElementById('yColSelect').value);
-        if (isNaN(xIdx) || isNaN(yIdx)) { alert('Please select X and Y columns.'); return; }
+        if (!currentParsedCSV || !currentParsedCSV.rows.length) {
+            alert('Please upload or paste a CSV dataset first.');
+            return;
+        }
+        const x1Sel = document.getElementById('x1ColSelect') || document.getElementById('xColSelect');
+        const ySel = document.getElementById('yColSelect');
+        if (!x1Sel || !ySel) { alert('Please select X and Y columns.'); return; }
 
-        const tableDiv = document.getElementById('csvTablePreview');
-        const trs = tableDiv.querySelectorAll('tbody tr');
-        trs.forEach(tr => {
-            const tds = tr.querySelectorAll('td');
-            if (tds.length > Math.max(xIdx, yIdx)) {
-                const xv = parseFloat(tds[xIdx].textContent);
-                const yv = parseFloat(tds[yIdx].textContent);
-                if (!isNaN(xv) && (yv === 0 || yv === 1)) { xData.push(xv); yData.push(yv); }
+        const x1Idx = parseInt(x1Sel.value);
+        const yIdx = parseInt(ySel.value);
+        if (isNaN(x1Idx) || isNaN(yIdx)) { alert('Please select valid X and Y columns.'); return; }
+
+        currentParsedCSV.rows.forEach(cells => {
+            if (cells.length > Math.max(x1Idx, yIdx)) {
+                const xv = parseFloat(cells[x1Idx]);
+                let yvRaw = cells[yIdx];
+                let yv = parseFloat(yvRaw);
+                if (isNaN(yv)) {
+                    yv = (String(yvRaw).toLowerCase().includes('1') || String(yvRaw).toLowerCase().includes('true') || String(yvRaw).toLowerCase().includes('pos') || String(yvRaw).toLowerCase().includes('pass')) ? 1 : 0;
+                } else {
+                    yv = yv > 0.5 ? 1 : 0;
+                }
+                if (!isNaN(xv)) { xData.push(xv); yData.push(yv); }
             }
         });
 
-        const xSel = document.getElementById('xColSelect');
-        const ySel = document.getElementById('yColSelect');
-        xLabel = xSel.options[xSel.selectedIndex].text;
-        yLabel = ySel.options[ySel.selectedIndex].text;
+        xLabel = x1Sel.options[x1Sel.selectedIndex]?.text || 'X';
+        yLabel = ySel.options[ySel.selectedIndex]?.text || 'Y';
     } else {
-        xLabel = document.getElementById('xLabel').value || 'X';
-        yLabel = document.getElementById('yLabel').value || 'Y';
+        const x1LabelEl = document.getElementById('x1Label') || document.getElementById('xLabel');
+        xLabel = x1LabelEl?.value || 'X';
+        yLabel = 'Label';
         document.querySelectorAll('.manual-row').forEach(row => {
             const inputs = row.querySelectorAll('input');
-            const xv = parseFloat(inputs[0].value);
-            const yv = parseFloat(inputs[1].value);
-            if (!isNaN(xv) && (yv === 0 || yv === 1)) { xData.push(xv); yData.push(yv); }
+            if (inputs.length >= 2) {
+                const xv = parseFloat(inputs[0].value);
+                const yv = parseFloat(inputs[inputs.length - 1].value);
+                if (!isNaN(xv) && (yv === 0 || yv === 1)) { xData.push(xv); yData.push(yv); }
+            }
         });
     }
 
     if (xData.length < 2) {
-        alert('Please provide at least 2 valid data points with Y = 0 or 1.');
+        alert('Please provide at least 2 valid data points with binary Y labels (0 or 1).');
         return;
     }
 
     const lr = new LogisticRegression(0.5, 2000, 0.5).fit(xData, yData);
 
     const results = document.getElementById('customResults');
-    results.style.display = 'block';
-    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (results) {
+        results.style.display = 'block';
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
-    document.getElementById('cMetricAccuracy').textContent = (lr.accuracy * 100).toFixed(1) + '%';
-    document.getElementById('cMetricPrecision').textContent = (lr.precision * 100).toFixed(1) + '%';
-    document.getElementById('cMetricRecall').textContent = (lr.recall * 100).toFixed(1) + '%';
-    document.getElementById('cMetricF1').textContent = lr.f1.toFixed(4);
-    document.getElementById('cMetricLogLoss').textContent = lr.logLoss.toFixed(4);
-    document.getElementById('cMetricThreshold').textContent = lr.threshold.toFixed(2);
+    // Set metrics matching exact IDs in logistic-regression.html
+    const elAcc = document.getElementById('cMetricAcc') || document.getElementById('cMetricAccuracy');
+    if (elAcc) elAcc.textContent = (lr.accuracy * 100).toFixed(1) + '%';
 
-    renderScatter('cScatterChart', xData, yData, lr, xLabel, yLabel);
-    renderProbChart('cProbChart', xData, yData, lr, xLabel);
-    renderConfusionMatrix('cConfusionMatrixDiv', lr);
+    const elLoss = document.getElementById('cMetricLoss') || document.getElementById('cMetricLogLoss');
+    if (elLoss) elLoss.textContent = lr.logLoss.toFixed(4);
+
+    const elPrec = document.getElementById('cMetricPrecision');
+    if (elPrec) elPrec.textContent = (lr.precision * 100).toFixed(1) + '%';
+
+    const elRec = document.getElementById('cMetricRecall');
+    if (elRec) elRec.textContent = (lr.recall * 100).toFixed(1) + '%';
+
+    const elF1 = document.getElementById('cMetricF1');
+    if (elF1) elF1.textContent = lr.f1.toFixed(4);
+
+    const elEq = document.getElementById('cMetricEq') || document.getElementById('cMetricThreshold');
+    if (elEq) {
+        const b = lr.getDecisionBoundary();
+        elEq.textContent = b !== null ? `${xLabel} = ${b.toFixed(2)}` : 'P(y=1)';
+    }
+
+    if (document.getElementById('cScatterChart')) renderScatter('cScatterChart', xData, yData, lr, xLabel, yLabel);
+    if (document.getElementById('cLossChart')) renderProbChart('cLossChart', xData, yData, lr, xLabel);
+    else if (document.getElementById('cProbChart')) renderProbChart('cProbChart', xData, yData, lr, xLabel);
+    if (document.getElementById('cConfusionMatrixDiv')) renderConfusionMatrix('cConfusionMatrixDiv', lr);
 
     window._customLR = lr;
-    document.getElementById('predictResult').style.display = 'none';
+    const predictRes = document.getElementById('predictResult');
+    if (predictRes) predictRes.style.display = 'none';
 }
 
 // ─── Intersection Observer for Animations ─────────────────
@@ -865,16 +916,30 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('trainCustomBtn').addEventListener('click', trainCustomModel);
 
     // Predict
-    document.getElementById('predictBtn').addEventListener('click', () => {
-        const lr = window._customLR;
-        if (!lr) { alert('Train a model first!'); return; }
-        const xv = parseFloat(document.getElementById('predictInput').value);
-        if (isNaN(xv)) { alert('Enter a valid number.'); return; }
-        const prob = lr.predictProba(xv);
-        const cls = lr.predict(xv);
-        const result = document.getElementById('predictResult');
-        result.style.display = 'block';
-    });
+    const predictBtn = document.getElementById('predictBtn');
+    if (predictBtn) {
+        predictBtn.addEventListener('click', () => {
+            const lr = window._customLR;
+            if (!lr) { alert('Please train a model first!'); return; }
+            const inputEl = document.getElementById('predictX1') || document.getElementById('predictInput');
+            if (!inputEl) return;
+            const xv = parseFloat(inputEl.value);
+            if (isNaN(xv)) { alert('Please enter a valid numeric value for prediction.'); return; }
+            const prob = lr.predictProba(xv);
+            const cls = lr.predict(xv);
+            const result = document.getElementById('predictResult');
+            if (result) {
+                result.style.display = 'block';
+                result.innerHTML = `
+                    <div style="padding: 0.85rem 1.1rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; margin-top: 0.75rem; font-family: var(--font-mono, monospace);">
+                        <strong style="color:#38bdf8;">🔮 Prediction Result:</strong><br>
+                        P(Y = 1 | X = ${xv}) = <strong style="color:#fbbf24;">${(prob * 100).toFixed(1)}%</strong><br>
+                        Predicted Output: <span style="color:${cls === 1 ? '#38bdf8' : '#f472b6'}; font-weight:700;">Class ${cls}</span>
+                    </div>
+                `;
+            }
+        });
+    }
 
     initCodeExplainer();
 });

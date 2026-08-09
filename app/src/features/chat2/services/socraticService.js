@@ -2,9 +2,7 @@
  * NeuralMind CHAT2 — Socratic Engine Service
  */
 
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
-const MODEL = 'llama-3.3-70b-versatile'
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions'
+import { callGroqApi, PRIMARY_MODEL } from './groqClient'
 
 let state = {
   topic: '',
@@ -27,20 +25,6 @@ Rules:
 
 Keep questions focused on ML concepts only.`
 
-async function callGroq(messages) {
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ model: MODEL, messages, temperature: 0.7, max_tokens: 500 })
-  })
-  if (!res.ok) throw new Error(`Groq API error: ${res.status}`)
-  const data = await res.json()
-  return data.choices[0].message.content
-}
-
 export async function startSocraticDialogue(topic) {
   state = { topic, history: [], step: 0 }
 
@@ -49,7 +33,13 @@ export async function startSocraticDialogue(topic) {
     { role: 'user', content: `The student wants to understand: "${topic}". Start the Socratic dialogue with your first foundational question.` }
   ]
 
-  const response = await callGroq(messages)
+  const response = await callGroqApi({
+    messages,
+    temperature: 0.7,
+    max_tokens: 500,
+    model: PRIMARY_MODEL
+  })
+
   state.history.push({ role: 'assistant', content: response })
   state.step++
   return response
@@ -64,7 +54,13 @@ export async function submitSocraticAnswer(userAnswer) {
     ...state.history
   ]
 
-  const response = await callGroq(messages)
+  const response = await callGroqApi({
+    messages,
+    temperature: 0.7,
+    max_tokens: 500,
+    model: PRIMARY_MODEL
+  })
+
   state.history.push({ role: 'assistant', content: response })
   state.step++
 

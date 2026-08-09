@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Bot, Send, Mic, MicOff, Network, GitBranch, Eye, TrendingUp, Mountain, Cpu, Sparkles, Trash2 } from 'lucide-react'
 import { streamChat, clearChatHistory } from '../services/chatService'
@@ -14,11 +15,13 @@ const QUICK_PROMPTS = [
 ]
 
 export function ChatModuleComponent() {
+  const location = useLocation()
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [isVoiceActive, setIsVoiceActive] = useState(false)
   const messagesEndRef = useRef(null)
+  const recognitionRef = useRef(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -69,29 +72,103 @@ export function ChatModuleComponent() {
     setMessages([])
   }
 
+  const stopVoice = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop()
+      } catch {
+        try {
+          recognitionRef.current.abort()
+        } catch {
+          /* ignore */
+        }
+      }
+      recognitionRef.current = null
+    }
+    setIsVoiceActive(false)
+  }
+
   const toggleVoice = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Speech recognition is not supported in this browser.')
+    if (isVoiceActive || recognitionRef.current) {
+      stopVoice()
       return
     }
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-    const recognition = new SpeechRecognition()
-    recognition.lang = 'en-US'
 
-    if (!isVoiceActive) {
-      setIsVoiceActive(true)
-      recognition.start()
-      recognition.onresult = (e) => {
-        const transcript = e.results[0][0].transcript
-        setInput(transcript)
-        setIsVoiceActive(false)
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.')
+      return
+    }
+
+    try {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'en-US'
+      recognition.interimResults = true
+      recognition.continuous = false
+      recognitionRef.current = recognition
+
+      recognition.onstart = () => {
+        setIsVoiceActive(true)
       }
-      recognition.onerror = () => setIsVoiceActive(false)
-      recognition.onend = () => setIsVoiceActive(false)
-    } else {
-      setIsVoiceActive(false)
+
+      recognition.onresult = (e) => {
+        let finalTranscript = ''
+        let interimTranscript = ''
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const transcript = e.results[i][0].transcript
+          if (e.results[i].isFinal) {
+            finalTranscript += transcript
+          } else {
+            interimTranscript += transcript
+          }
+        }
+        const textToSet = finalTranscript || interimTranscript
+        if (textToSet) {
+          setInput(textToSet)
+        }
+      }
+
+      recognition.onerror = (err) => {
+        console.warn('Speech recognition error:', err.error)
+        if (err.error === 'not-allowed' || err.error === 'service-not-allowed') {
+          alert('Microphone access denied. Please allow microphone permissions in your browser settings.')
+        }
+        stopVoice()
+      }
+
+      recognition.onend = () => {
+        stopVoice()
+      }
+
+      recognition.start()
+    } catch (err) {
+      console.error('Failed to start speech recognition:', err)
+      stopVoice()
     }
   }
+
+  useEffect(() => {
+    if (location.state?.startVoice) {
+      const timer = setTimeout(() => {
+        toggleVoice()
+      }, 400)
+      return () => clearTimeout(timer)
+    }
+  }, [location.state])
+
+  // Clean up speech recognition on component unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort()
+        } catch {
+          /* ignore */
+        }
+        recognitionRef.current = null
+      }
+    }
+  }, [])
 
   return (
     <div className="chat2-card">

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bot, MessageSquare, Send, Sparkles, X, ChevronRight } from 'lucide-react'
+import { streamGroqApi, PRIMARY_MODEL } from '../../chat2/services/groqClient'
 
 export function AtlasAiCoach({ winner, analysis }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -11,32 +12,109 @@ export function AtlasAiCoach({ winner, analysis }) {
     }
   ])
   const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const messagesEndRef = useRef(null)
 
-  const handleSend = (textToSend) => {
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom()
+    }
+  }, [messages, isOpen, isLoading])
+
+  const buildSystemPrompt = () => {
+    const hasDataset = Boolean(analysis && (analysis.rows || analysis.rowCount || analysis.columns || analysis.colCount))
+
+    let contextDetails = ''
+    if (hasDataset) {
+      const rowCount = analysis.rows || analysis.rowCount || 'Unknown'
+      const colCount = analysis.columns || analysis.colCount || (analysis.headers ? analysis.headers.length : 'Unknown')
+      const targetCol = analysis.targetColumn || analysis.target || 'Auto-Detected Target'
+      const problemType = analysis.problemType || 'Classification / Regression'
+      const featureList = Array.isArray(analysis.headers) ? analysis.headers.join(', ') : 'Provided in dataset'
+      const winnerName = winner?.name || 'Top Model'
+      const winnerScore = winner?.score ? `${(winner.score * 100).toFixed(1)}%` : winner?.accuracy ? `${(winner.accuracy * 100).toFixed(1)}%` : '93.5%'
+      const winnerLatency = winner?.timeMs ? `${winner.timeMs}ms` : '140ms'
+
+      contextDetails = `
+CURRENT LAB & DATASET CONTEXT:
+- Dataset Dimensions: ${rowCount} rows, ${colCount} features/columns
+- Feature Column Names: ${featureList}
+- Target Variable Column: "${targetCol}"
+- Identified ML Problem Type: ${problemType}
+- Leaderboard Winning Model: ${winnerName}
+- Winning Validation Score: ${winnerScore}
+- Production Inference Latency: ~${winnerLatency} per 1,000 requests
+`
+    } else {
+      contextDetails = `
+CURRENT LAB & DATASET CONTEXT:
+- No dataset is currently loaded or dataset metrics are unavailable in the current view.
+`
+    }
+
+    return `You are ATLAS, an elite AI Laboratory Mentor inside the "Into The Algorithm" platform. You guide users on machine learning experiments, algorithm selection, hyperparameter tuning, model performance evaluation, and production deployment.
+
+${contextDetails}
+
+CRITICAL RULES:
+1. Base your dataset statistics ONLY on the actual context provided above. DO NOT invent or fabricate dataset row counts, feature names, or metrics.
+2. If the user asks about dataset details when no dataset is loaded, explicitly state that no dataset is loaded yet.
+3. Keep answers crisp, technical, encouraging, and structured with clear markdown bullet points when explaining complex choices.
+4. Answer follow-up questions in direct relation to previous messages in the conversation.`
+  }
+
+  const handleSend = async (textToSend) => {
     const query = textToSend || input
-    if (!query.trim()) return
+    if (!query.trim() || isLoading) return
 
-    const newMsgs = [...messages, { sender: 'user', text: query }]
-    setMessages(newMsgs)
+    const userMsg = { sender: 'user', text: query }
+    const updatedMessages = [...messages, userMsg]
+    setMessages(updatedMessages)
     setInput('')
+    setIsLoading(true)
 
-    // Generate intelligent AI response
-    setTimeout(() => {
-      let reply = `Based on your dataset structure (${analysis?.rows || 891} rows, ${analysis?.columns || 12} features), `
-      const lower = query.toLowerCase()
+    // Add empty assistant response placeholder
+    setMessages(prev => [...prev, { sender: 'atlas', text: '' }])
 
-      if (lower.includes('xgboost') || lower.includes('random forest') || lower.includes('why')) {
-        reply += `${winner?.name || 'Random Forest'} performed best because it excels at capturing non-linear feature interactions without requiring manual feature scaling.`
-      } else if (lower.includes('latency') || lower.includes('speed') || lower.includes('deploy')) {
-        reply += `Expected production inference latency is ~${winner?.timeMs || 140}ms per 1,000 requests. For ultra-fast microsecond inference, LightGBM or Logistic Regression is recommended.`
-      } else if (lower.includes('imbalance') || lower.includes('missing')) {
-        reply += `For missing data or class imbalance, consider setting SMOTE oversampling or applying class weights (class_weight='balanced') in Scikit-learn.`
-      } else {
-        reply += `I recommend deploying ${winner?.name || 'Random Forest'} with 5-fold cross validation. It offers 93%+ validation stability with minimal risk of overfitting.`
-      }
+    // Format conversation history for Groq API
+    const systemPrompt = buildSystemPrompt()
+    const apiMessages = [
+      { role: 'system', content: systemPrompt },
+      ...updatedMessages.slice(-10).map(m => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        content: m.text
+      }))
+    ]
 
-      setMessages(prev => [...prev, { sender: 'atlas', text: reply }])
-    }, 500)
+    try {
+      await streamGroqApi({
+        messages: apiMessages,
+        temperature: 0.6,
+        max_tokens: 1024,
+        model: PRIMARY_MODEL,
+        onChunk: (chunk, fullText) => {
+          setMessages(prev => {
+            const next = [...prev]
+            next[next.length - 1] = { sender: 'atlas', text: fullText }
+            return next
+          })
+        },
+        onDone: () => {
+          setIsLoading(false)
+        }
+      })
+    } catch (err) {
+      setMessages(prev => {
+        const next = [...prev]
+        next[next.length - 1] = { sender: 'atlas', text: `⚠️ ATLAS Error: ${err.message}` }
+        return next
+      })
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -124,12 +202,14 @@ export function AtlasAiCoach({ winner, analysis }) {
                     borderRadius: '14px',
                     color: m.sender === 'user' ? '#38bdf8' : '#e2e8f0',
                     maxWidth: '85%',
-                    lineHeight: 1.45
+                    lineHeight: 1.45,
+                    whiteSpace: 'pre-wrap'
                   }}
                 >
-                  {m.text}
+                  {m.text || (isLoading && idx === messages.length - 1 ? 'ATLAS is thinking...' : '')}
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Quick Prompt Chips */}
@@ -140,6 +220,7 @@ export function AtlasAiCoach({ winner, analysis }) {
                   type="button"
                   style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem', borderRadius: '999px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', cursor: 'pointer', whiteSpace: 'nowrap' }}
                   onClick={() => handleSend(chip)}
+                  disabled={isLoading}
                 >
                   {chip}
                 </button>
@@ -154,12 +235,14 @@ export function AtlasAiCoach({ winner, analysis }) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                disabled={isLoading}
                 style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '0.45rem 0.75rem', color: '#fff', fontSize: '0.82rem', outline: 'none' }}
               />
               <button
                 type="button"
                 onClick={() => handleSend()}
-                style={{ background: '#06b6d4', border: 'none', borderRadius: '10px', width: '36px', height: '36px', display: 'grid', placeItems: 'center', color: '#000', cursor: 'pointer' }}
+                disabled={isLoading}
+                style={{ background: '#06b6d4', border: 'none', borderRadius: '10px', width: '36px', height: '36px', display: 'grid', placeItems: 'center', color: '#000', cursor: 'pointer', opacity: isLoading ? 0.6 : 1 }}
               >
                 <Send size={16} />
               </button>

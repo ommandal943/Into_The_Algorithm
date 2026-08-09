@@ -142,7 +142,7 @@ export default function InteractivePillars() {
 
           <h2>ML Quest</h2>
           <p className="pillar-desc">
-            A Candy Crush–style 10-level campaign designed to prepare you for Machine Learning & AI engineering interviews with real questions & live coding.
+            A Candy Crush–style 100-level campaign designed to prepare you for Machine Learning & AI engineering interviews with real questions & live coding.
           </p>
 
           {/* Gamified Feature Badges */}
@@ -152,7 +152,7 @@ export default function InteractivePillars() {
                 <Trophy size={18} color="#fbbf24" />
               </div>
               <div className="q-feat-text">
-                <h5>10 Level Stages</h5>
+                <h5>100 Level Stages</h5>
                 <p>From Linear models to Transformer architectures</p>
               </div>
             </div>

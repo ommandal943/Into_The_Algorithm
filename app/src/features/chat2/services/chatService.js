@@ -2,9 +2,7 @@
  * NeuralMind CHAT2 — Core Chat Engine Service (Groq API + Llama 3.3 70B)
  */
 
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
-const MODEL = 'llama-3.3-70b-versatile'
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions'
+import { streamGroqApi, PRIMARY_MODEL } from './groqClient'
 
 const SYSTEM_PROMPT = `You are NeuralMind, an elite AI assistant specializing exclusively in Machine Learning, hosted inside a premium AI learning platform called "Into The Algorithm".
 
@@ -65,57 +63,25 @@ export async function streamChat(userMessage, onChunk, onDone) {
     ...history.slice(-20)
   ]
 
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: MODEL,
+  try {
+    const fullText = await streamGroqApi({
       messages,
       temperature: 0.7,
       max_tokens: 2048,
-      stream: true,
-      top_p: 0.9
-    })
-  })
-
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Groq API Error (${res.status}): ${err}`)
-  }
-
-  const reader = res.body.getReader()
-  const decoder = new TextDecoder()
-  let fullText = ''
-
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-
-    const chunk = decoder.decode(value)
-    const lines = chunk.split('\n').filter(l => l.startsWith('data: '))
-
-    for (const line of lines) {
-      const data = line.slice(6)
-      if (data === '[DONE]') continue
-      try {
-        const parsed = JSON.parse(data)
-        const delta = parsed.choices[0]?.delta?.content || ''
-        if (delta) {
-          fullText += delta
-          onChunk(delta, fullText)
-        }
-      } catch {
-        /* skip malformed chunks */
+      model: PRIMARY_MODEL,
+      onChunk,
+      onDone: (text) => {
+        history.push({ role: 'assistant', content: text })
+        if (onDone) onDone(text)
       }
-    }
-  }
+    })
 
-  history.push({ role: 'assistant', content: fullText })
-  if (onDone) onDone(fullText)
-  return fullText
+    return fullText
+  } catch (err) {
+    // Remove the unhandled user message from history on failure to prevent stale error state
+    history.pop()
+    throw err
+  }
 }
 
 export function clearChatHistory() {

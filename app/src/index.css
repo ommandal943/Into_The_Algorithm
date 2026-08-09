@@ -135,15 +135,18 @@ main {
   transform: scale(1.03);
 }
 
-.brand-candy {
+.brand-candy,
+.neural-core-3d-wrap {
   display: inline-flex;
-  background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-size: 1.4rem;
-  animation: brand-rotate 4s linear infinite;
-  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.5));
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.4));
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.brand:hover .neural-core-3d-wrap {
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.7));
 }
 
 @keyframes brand-rotate {
@@ -6789,7 +6792,7 @@ html.lenis body {
   background: rgba(255,255,255,0.025);
   border: 1px solid rgba(255,255,255,0.06);
   transition: border-color 0.2s, background 0.2s;
-  cursor: default;
+  cursor: pointer;
 }
 .cc-advisor-rec-card:hover {
   border-color: rgba(255,255,255,0.12);
