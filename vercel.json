@@ -3,12 +3,8 @@
   "outputDirectory": "app/dist",
   "rewrites": [
     {
-      "source": "/assets/(.*)",
-      "destination": "/app/dist/assets/$1"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/app/dist/index.html"
+      "destination": "/index.html"
     }
   ]
 }
