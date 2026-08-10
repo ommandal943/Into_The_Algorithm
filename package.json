@@ -2,6 +2,6 @@
   "name": "into-the-algorithm-root",
   "private": true,
   "scripts": {
-    "build": "if [ -d app ]; then cd app && npm install --legacy-peer-deps; fi && npm run build"
+    "build": "if [ -d app ]; then cd app && npm install --legacy-peer-deps; fi && npm run build && mkdir -p dist && cp -r app/dist/* dist/ 2>/dev/null || true"
   }
 }
