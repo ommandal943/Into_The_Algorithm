@@ -1,0 +1,7 @@
+{
+  "name": "into-the-algorithm-root",
+  "private": true,
+  "scripts": {
+    "build": "cd app && npm install --legacy-peer-deps && npm run build"
+  }
+}
