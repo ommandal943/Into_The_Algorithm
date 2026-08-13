@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Bot, Lightbulb, GraduationCap, FileText, Image as ImageIcon, Sparkles } from 'lucide-react'
+import { Bot, Lightbulb, GraduationCap, FileText, Sparkles } from 'lucide-react'
 import { ChatModuleComponent } from './ChatModuleComponent'
 import { SocraticModuleComponent } from './SocraticModuleComponent'
 import { ExplainModuleComponent } from './ExplainModuleComponent'
 import { NotesModuleComponent } from './NotesModuleComponent'
-import { ImageGenModuleComponent } from './ImageGenModuleComponent'
 import '../styles/chat2.css'
 
 export default function NeuralMindView() {
@@ -66,15 +65,6 @@ export default function NeuralMindView() {
               <FileText size={15} />
               <span>Notes</span>
             </button>
-
-            <button
-              type="button"
-              className={`chat2-tab-btn ${activeModule === 'image' ? 'active' : ''}`}
-              onClick={() => setActiveModule('image')}
-            >
-              <ImageIcon size={15} />
-              <span>Imagine</span>
-            </button>
           </div>
         </div>
 
@@ -89,7 +79,6 @@ export default function NeuralMindView() {
           {activeModule === 'socratic' && <SocraticModuleComponent />}
           {activeModule === 'explain' && <ExplainModuleComponent />}
           {activeModule === 'notes' && <NotesModuleComponent />}
-          {activeModule === 'image' && <ImageGenModuleComponent />}
         </motion.div>
       </div>
     </div>

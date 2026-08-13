@@ -102,6 +102,7 @@
             background: rgba(0,0,0,0.6);
             padding: 0.35rem 0.85rem;
             border-radius: 50px;
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             pointer-events: none;
         }
@@ -554,14 +555,14 @@
                             <span class="k-num" id="kDisplay">5</span>
                             <span style="color: var(--text-muted); font-size: 0.82rem;">neighbors</span>
                         </div>
-                        <input type="range" id="kSlider" min="1" max="25" step="1" value="5">
+                        <input aria-label="k Slider" title="k Slider" type="range" id="kSlider" min="1" max="25" step="1" value="5">
                     </div>
 
                     <div class="control-block">
                         <div class="toggle-row">
                             <label style="margin-bottom: 0;">Weighted voting</label>
                             <label class="toggle-switch">
-                                <input type="checkbox" id="weightedToggle">
+                                <input aria-label="weighted Toggle" title="weighted Toggle" type="checkbox" id="weightedToggle">
                                 <span class="toggle-track"></span>
                             </label>
                         </div>
@@ -571,7 +572,7 @@
                         <div class="toggle-row">
                             <label style="margin-bottom: 0;">Show decision boundary</label>
                             <label class="toggle-switch">
-                                <input type="checkbox" id="boundaryToggle" checked>
+                                <input aria-label="boundary Toggle" title="boundary Toggle" type="checkbox" id="boundaryToggle" checked>
                                 <span class="toggle-track"></span>
                             </label>
                         </div>
@@ -676,7 +677,7 @@
                             <label class="btn btn-outline btn-sm" for="csvFileInput">
                                 Browse Files
                             </label>
-                            <input type="file" id="csvFileInput" accept=".csv" hidden>
+                            <input aria-label="csv File Input" title="csv File Input" type="file" id="csvFileInput" accept=".csv" hidden>
                             <p class="upload-hint">Need three columns: X1, X2, and Label (0 or 1).</p>
                         </div>
                         <div id="csvPreview" style="display:none;">
@@ -703,9 +704,9 @@
                         <div class="manual-entry">
                             <div class="manual-header">
                                 <div class="manual-labels">
-                                    <input type="text" id="x1Label" value="X1" placeholder="X1 label">
-                                    <input type="text" id="x2Label" value="X2" placeholder="X2 label">
-                                    <input type="text" value="Label" disabled style="opacity: 0.5;">
+                                    <input aria-label="x1 Label" title="x1 Label" type="text" id="x1Label" value="X1" placeholder="X1 label">
+                                    <input aria-label="x2 Label" title="x2 Label" type="text" id="x2Label" value="X2" placeholder="X2 label">
+                                    <input aria-label="Input control" title="Input control" type="text" value="Label" disabled style="opacity: 0.5;">
                                 </div>
                             </div>
                             <div class="manual-rows" id="manualRows"></div>
@@ -719,7 +720,7 @@
 
                     <div class="dataset-selector" style="margin:1.25rem 0 0; padding:0;">
                         <label for="playgroundK">K neighbors:</label>
-                        <input type="number" id="playgroundK" min="1" max="50" value="5" step="1"
+                        <input aria-label="playground K" title="playground K" type="number" id="playgroundK" min="1" max="50" value="5" step="1"
                                style="width:4.5rem;padding:0.6rem 0.75rem;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);font-family:var(--font-body);font-size:0.9rem;">
                     </div>
 
@@ -756,9 +757,9 @@
                         <h4>🔮 Classify a New Point</h4>
                         <div class="predict-row">
                             <label for="predictX1">X1:</label>
-                            <input type="number" id="predictX1" step="any" placeholder="e.g. 5.2">
+                            <input aria-label="predict X1" title="predict X1" type="number" id="predictX1" step="any" placeholder="e.g. 5.2">
                             <label for="predictX2">X2:</label>
-                            <input type="number" id="predictX2" step="any" placeholder="e.g. 3.1">
+                            <input aria-label="predict X2" title="predict X2" type="number" id="predictX2" step="any" placeholder="e.g. 3.1">
                             <button class="btn btn-primary btn-sm knn-btn" id="predictBtn">Classify</button>
                         </div>
                         <div class="predict-result" id="predictResult"></div>

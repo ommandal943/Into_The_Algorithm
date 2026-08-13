@@ -2,6 +2,9 @@
   "name": "into-the-algorithm-root",
   "private": true,
   "scripts": {
-    "build": "if [ -d app ]; then cd app && npm install --legacy-peer-deps; fi && npm run build && mkdir -p dist && cp -r app/dist/* dist/ 2>/dev/null || true"
+    "dev": "npm --prefix app run dev",
+    "build": "npm --prefix app run build",
+    "preview": "npm --prefix app run preview"
   }
 }
+

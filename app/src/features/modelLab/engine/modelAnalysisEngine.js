@@ -9,10 +9,20 @@ export function parseCSV(csvString) {
   const lines = csvString.trim().split(/\r\n|\n/);
   if (lines.length < 2) return null;
 
-  const headers = parseCSVLine(lines[0]);
-  const rows = [];
+  // Sanitize headers to prevent prototype pollution
+  const rawHeaders = parseCSVLine(lines[0]);
+  const headers = rawHeaders.map(h => {
+    const clean = h.trim();
+    if (clean === '__proto__' || clean === 'constructor' || clean === 'prototype') {
+      return `col_${clean}`;
+    }
+    return clean || 'col_unnamed';
+  });
 
-  for (let i = 1; i < lines.length; i++) {
+  const rows = [];
+  const maxRows = Math.min(lines.length, 20001); // Cap at 20,000 data rows
+
+  for (let i = 1; i < maxRows; i++) {
     if (!lines[i].trim()) continue;
     const values = parseCSVLine(lines[i]);
     if (values.length === headers.length) {
@@ -20,7 +30,7 @@ export function parseCSV(csvString) {
       headers.forEach((h, idx) => {
         const val = values[idx];
         const num = Number(val);
-        rowObj[h] = !isNaN(num) && val.trim() !== '' ? num : val;
+        rowObj[h] = !isNaN(num) && isFinite(num) && val.trim() !== '' ? num : val;
       });
       rows.push(rowObj);
     }

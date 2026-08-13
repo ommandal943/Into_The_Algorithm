@@ -85,6 +85,7 @@
             padding: 0.25rem 1.25rem;
             cursor: pointer;
             transition: all 0.15s ease;
+            -webkit-user-select: none;
             user-select: none;
             border-left: 3px solid transparent;
         }
@@ -253,6 +254,7 @@
             padding: 0.4rem 1rem;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             pointer-events: none;
             display: flex;
@@ -270,6 +272,7 @@
             border-radius: var(--radius);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
         }
         .control-block h3 {
@@ -717,7 +720,7 @@
                                 <span>Axis Angle ($\theta$)</span>
                                 <span class="slider-val" id="valAngle">0°</span>
                             </div>
-                            <input type="range" id="sliderAngle" min="0" max="180" value="0">
+                            <input aria-label="slider Angle" title="slider Angle" type="range" id="sliderAngle" min="0" max="180" value="0">
                         </div>
 
                         <!-- Auto-Align to PC1 Button -->
@@ -728,7 +731,7 @@
                         <!-- Show Projection Lines Checkbox -->
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.25rem;">
                             <span style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">Draw Orthogonal Projection Lines</span>
-                            <input type="checkbox" id="checkProjections" checked style="accent-color:#a78bfa; width:18px; height:18px; cursor:pointer;">
+                            <input aria-label="check Projections" title="check Projections" type="checkbox" id="checkProjections" checked style="accent-color:#a78bfa; width:18px; height:18px; cursor:pointer;">
                         </div>
                     </div>
                 </div>

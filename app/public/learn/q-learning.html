@@ -77,6 +77,7 @@
             padding: 0.25rem 1.25rem;
             cursor: pointer;
             transition: all 0.15s ease;
+            -webkit-user-select: none;
             user-select: none;
             border-left: 3px solid transparent;
         }
@@ -172,10 +173,12 @@
         .ql-canvas-container canvas { display: block; width: 100%; cursor: crosshair; }
         .canvas-tooltip {
             position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-size: 0.78rem; font-weight: 600; color: #ffffff;
+            -webkit-backdrop-filter: blur(12px); pointer-events: none; display: flex; align-items: center; gap: 0.5rem;
             background: rgba(10, 14, 26, 0.85); padding: 0.4rem 1rem; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); pointer-events: none; display: flex; align-items: center; gap: 0.5rem;
         }
         .ql-controls-sidebar { width: 330px; min-width: 290px; }
 
+        -webkit-backdrop-filter: blur(16px); }
         .control-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; backdrop-filter: blur(16px); }
         .control-block h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
 
@@ -549,7 +552,7 @@
                                 <span>Learning Rate ($\alpha$)</span>
                                 <span class="slider-val" id="valAlpha">0.20</span>
                             </div>
-                            <input type="range" id="sliderAlpha" min="0.01" max="0.99" step="0.01" value="0.20">
+                            <input aria-label="slider Alpha" title="slider Alpha" type="range" id="sliderAlpha" min="0.01" max="0.99" step="0.01" value="0.20">
                         </div>
 
                         <div class="slider-group">
@@ -557,7 +560,7 @@
                                 <span>Discount Factor ($\gamma$)</span>
                                 <span class="slider-val" id="valGamma">0.95</span>
                             </div>
-                            <input type="range" id="sliderGamma" min="0.5" max="0.99" step="0.01" value="0.95">
+                            <input aria-label="slider Gamma" title="slider Gamma" type="range" id="sliderGamma" min="0.5" max="0.99" step="0.01" value="0.95">
                         </div>
 
                         <div class="slider-group">
@@ -565,7 +568,7 @@
                                 <span>Exploration ($\epsilon$)</span>
                                 <span class="slider-val" id="valEpsilon">0.15</span>
                             </div>
-                            <input type="range" id="sliderEpsilon" min="0.01" max="0.99" step="0.01" value="0.15">
+                            <input aria-label="slider Epsilon" title="slider Epsilon" type="range" id="sliderEpsilon" min="0.01" max="0.99" step="0.01" value="0.15">
                         </div>
                     </div>
                 </div>

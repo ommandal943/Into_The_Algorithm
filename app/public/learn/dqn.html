@@ -50,6 +50,7 @@
         .code-header-title { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-secondary); }
 
         .code-block-interactive { background: #060913; padding: 1rem 0; font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.8; color: #e6edf3; overflow-x: auto; margin: 0; }
+        -webkit-user-select: none; border-left: 3px solid transparent; }
         .code-line { display: flex; padding: 0.25rem 1.25rem; cursor: pointer; transition: all 0.15s ease; user-select: none; border-left: 3px solid transparent; }
         .code-line:hover, .code-line.active { background: rgba(129, 140, 248, 0.15); border-left-color: #818cf8; }
         .code-line.locked { background: rgba(129, 140, 248, 0.28) !important; border-left: 4px solid #818cf8 !important; box-shadow: inset 0 0 12px rgba(129, 140, 248, 0.2); }
@@ -90,10 +91,12 @@
         .dqn-canvas-container canvas { display: block; width: 100%; cursor: crosshair; }
         .canvas-tooltip {
             position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-size: 0.78rem; font-weight: 600; color: #ffffff;
+            -webkit-backdrop-filter: blur(12px); pointer-events: none; display: flex; align-items: center; gap: 0.5rem;
             background: rgba(10, 14, 26, 0.85); padding: 0.4rem 1rem; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); pointer-events: none; display: flex; align-items: center; gap: 0.5rem;
         }
         .dqn-controls-sidebar { width: 330px; min-width: 290px; }
 
+        -webkit-backdrop-filter: blur(16px); }
         .control-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; backdrop-filter: blur(16px); }
         .control-block h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
 
@@ -467,7 +470,7 @@
                                 <span>Learning Rate ($\eta$)</span>
                                 <span class="slider-val" id="valLR">0.001</span>
                             </div>
-                            <input type="range" id="sliderLR" min="0.0001" max="0.01" step="0.0005" value="0.001">
+                            <input aria-label="slider L R" title="slider L R" type="range" id="sliderLR" min="0.0001" max="0.01" step="0.0005" value="0.001">
                         </div>
 
                         <div class="slider-group">
@@ -475,7 +478,7 @@
                                 <span>Batch Size</span>
                                 <span class="slider-val" id="valBatch">32</span>
                             </div>
-                            <input type="range" id="sliderBatch" min="8" max="128" step="8" value="32">
+                            <input aria-label="slider Batch" title="slider Batch" type="range" id="sliderBatch" min="8" max="128" step="8" value="32">
                         </div>
 
                         <div class="slider-group">
@@ -483,7 +486,7 @@
                                 <span>Target Sync Steps ($C$)</span>
                                 <span class="slider-val" id="valSync">20</span>
                             </div>
-                            <input type="range" id="sliderSync" min="5" max="100" value="20">
+                            <input aria-label="slider Sync" title="slider Sync" type="range" id="sliderSync" min="5" max="100" value="20">
                         </div>
                     </div>
                 </div>

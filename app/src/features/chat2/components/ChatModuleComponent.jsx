@@ -63,6 +63,7 @@ export function ChatModuleComponent() {
         updated[updated.length - 1] = { role: 'assistant', content: `⚠️ Error: ${err.message}` }
         return updated
       })
+    } finally {
       setIsStreaming(false)
     }
   }

@@ -1,0 +1,15 @@
+{
+  "hints": {
+    "compat-api/css": "off",
+    "css-prefix-order": "off",
+    "axe/forms": "off",
+    "disown-opener": "off"
+  },
+  "browserslist": [
+    "defaults",
+    "last 2 versions",
+    "not dead",
+    "safari >= 15.4",
+    "ios_saf >= 15.4"
+  ]
+}

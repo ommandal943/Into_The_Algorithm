@@ -40,7 +40,7 @@
   nav.topnav{
     position:sticky; top:0; z-index:50;
     display:flex; gap:4px; overflow-x:auto;
-    background:rgba(15,20,25,0.92); backdrop-filter:blur(16px);
+    background:rgba(15,20,25,0.92); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
     border-bottom:1px solid var(--line);
     padding:0 18px; align-items: center;
   }
@@ -60,7 +60,7 @@
   /* ---------- Sticky Mastery Progress Bar ---------- */
   .mastery-sticky-bar {
     position: sticky; top: 49px; z-index: 45;
-    background: rgba(22, 27, 34, 0.9); backdrop-filter: blur(12px);
+    background: rgba(22, 27, 34, 0.9); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
     padding: 8px 24px; display: flex; align-items: center; justify-content: space-between;
     gap: 16px; font-family: var(--mono); font-size: 13px;
@@ -251,6 +251,8 @@
   #probability h2 .dot{background:var(--pr);}
   #python h2 .dot{background:var(--py);}
   #optimization h2 .dot{background:var(--op);}
+  #cheatsheet h2 .dot{background:var(--la);}
+  #resources h2 .dot{background:var(--ca);}
 
   /* Reveal Animations */
   .reveal-hidden { opacity: 0; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -297,7 +299,7 @@
     <!-- Quick Search Bar -->
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
-      <input type="text" id="prereqSearchInput" class="search-input" placeholder="Search topics (e.g. Eigenvectors, Bayes, Gradient)...">
+      <input aria-label="prereq Search Input" title="prereq Search Input" type="text" id="prereqSearchInput" class="search-input" placeholder="Search topics (e.g. Eigenvectors, Bayes, Gradient)...">
     </div>
 
     <div class="roadmap-wrap">
@@ -402,16 +404,16 @@
       <canvas id="matrixCanvas" height="240"></canvas>
       <div class="lab-controls">
         <div class="lab-slider-group">
-          <span>a:</span> <input type="range" id="matA" min="-2" max="2" step="0.1" value="1.2"> <span id="valA">1.2</span>
+          <span>a:</span> <input aria-label="mat A" title="mat A" type="range" id="matA" min="-2" max="2" step="0.1" value="1.2"> <span id="valA">1.2</span>
         </div>
         <div class="lab-slider-group">
-          <span>b:</span> <input type="range" id="matB" min="-2" max="2" step="0.1" value="0.4"> <span id="valB">0.4</span>
+          <span>b:</span> <input aria-label="mat B" title="mat B" type="range" id="matB" min="-2" max="2" step="0.1" value="0.4"> <span id="valB">0.4</span>
         </div>
         <div class="lab-slider-group">
-          <span>c:</span> <input type="range" id="matC" min="-2" max="2" step="0.1" value="0.2"> <span id="valC">0.2</span>
+          <span>c:</span> <input aria-label="mat C" title="mat C" type="range" id="matC" min="-2" max="2" step="0.1" value="0.2"> <span id="valC">0.2</span>
         </div>
         <div class="lab-slider-group">
-          <span>d:</span> <input type="range" id="matD" min="-2" max="2" step="0.1" value="1.1"> <span id="valD">1.1</span>
+          <span>d:</span> <input aria-label="mat D" title="mat D" type="range" id="matD" min="-2" max="2" step="0.1" value="1.1"> <span id="valD">1.1</span>
         </div>
         <button class="lab-btn" id="resetMatrixBtn">↺ Identity</button>
       </div>
@@ -475,7 +477,7 @@
       <div class="lab-controls">
         <div class="lab-slider-group">
           <span>Learning Rate (α):</span>
-          <input type="range" id="gdLR" min="0.05" max="0.9" step="0.05" value="0.15">
+          <input aria-label="gd L R" title="gd L R" type="range" id="gdLR" min="0.05" max="0.9" step="0.05" value="0.15">
           <span id="valLR">0.15</span>
         </div>
         <button class="lab-btn" id="gdStepBtn">Step ➔</button>
@@ -520,10 +522,10 @@
       <canvas id="gaussianCanvas" height="240"></canvas>
       <div class="lab-controls">
         <div class="lab-slider-group">
-          <span>Mean (μ):</span> <input type="range" id="gaussMu" min="-2" max="2" step="0.2" value="0"> <span id="valMu">0.0</span>
+          <span>Mean (μ):</span> <input aria-label="gauss Mu" title="gauss Mu" type="range" id="gaussMu" min="-2" max="2" step="0.2" value="0"> <span id="valMu">0.0</span>
         </div>
         <div class="lab-slider-group">
-          <span>Std Dev (σ):</span> <input type="range" id="gaussSigma" min="0.5" max="2.5" step="0.1" value="1.2"> <span id="valSigma">1.2</span>
+          <span>Std Dev (σ):</span> <input aria-label="gauss Sigma" title="gauss Sigma" type="range" id="gaussSigma" min="0.5" max="2.5" step="0.1" value="1.2"> <span id="valSigma">1.2</span>
         </div>
         <button class="lab-btn" id="gaussSampleBtn">🎲 Sample +50</button>
         <button class="lab-btn" id="gaussClearBtn">🗑️ Clear</button>
@@ -591,7 +593,7 @@
 
 <!-- ================= CHEAT SHEET ================= -->
 <section id="cheatsheet">
-  <h2><span class="dot" style="background:var(--la)"></span>Formula Cheat Sheet</h2>
+  <h2><span class="dot"></span>Formula Cheat Sheet</h2>
   <div class="kicker">one table, everything above, for last-minute revision</div>
   <div class="card">
     <table class="cheat">
@@ -615,40 +617,40 @@
 
 <!-- ================= RESOURCES ================= -->
 <section id="resources">
-  <h2><span class="dot" style="background:var(--ca)"></span>Reference Links</h2>
+  <h2><span class="dot"></span>Reference Links</h2>
   <div class="kicker">the exact sources worth your time, in order</div>
   <div class="card">
     <div class="refcard">
       <div><span class="name">3Blue1Brown — Essence of Linear Algebra</span><br><span class="why">the intuition for vectors/matrices before any symbol-pushing</span></div>
-      <a class="reflink" href="https://www.3blue1brown.com/topics/linear-algebra" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://www.3blue1brown.com/topics/linear-algebra" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
     <div class="refcard">
       <div><span class="name">3Blue1Brown — Essence of Calculus</span><br><span class="why">derivatives/chain rule visualized</span></div>
-      <a class="reflink" href="https://www.3blue1brown.com/topics/calculus" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://www.3blue1brown.com/topics/calculus" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
     <div class="refcard">
       <div><span class="name">Khan Academy — Linear Algebra &amp; Calculus</span><br><span class="why">structured practice problems with instant feedback</span></div>
-      <a class="reflink" href="https://www.khanacademy.org/math/linear-algebra" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://www.khanacademy.org/math/linear-algebra" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
     <div class="refcard">
       <div><span class="name">StatQuest (Josh Starmer)</span><br><span class="why">probability, statistics &amp; ML concepts explained "step by step, clearly"</span></div>
-      <a class="reflink" href="https://statquest.org/" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://statquest.org/" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
     <div class="refcard">
       <div><span class="name">Seeing Theory (Brown University)</span><br><span class="why">interactive visual intro to probability &amp; statistics</span></div>
-      <a class="reflink" href="https://seeing-theory.brown.edu/" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://seeing-theory.brown.edu/" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
     <div class="refcard">
       <div><span class="name">Mathematics for Machine Learning (book, free PDF)</span><br><span class="why">the exact syllabus above, written out formally — by Deisenroth, Faisal, Ong</span></div>
-      <a class="reflink" href="https://mml-book.github.io/" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://mml-book.github.io/" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
     <div class="refcard">
       <div><span class="name">NumPy / Pandas official quickstart docs</span><br><span class="why">reference while coding, not for reading cover to cover</span></div>
-      <a class="reflink" href="https://numpy.org/doc/stable/user/quickstart.html" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://numpy.org/doc/stable/user/quickstart.html" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
     <div class="refcard">
       <div><span class="name">Andrew Ng — Machine Learning Specialization (Coursera)</span><br><span class="why">once prerequisites feel steady, this is the natural next step</span></div>
-      <a class="reflink" href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank">visit ↗</a>
+      <a class="reflink" href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank" rel="noopener noreferrer">visit ↗</a>
     </div>
   </div>
 </section>

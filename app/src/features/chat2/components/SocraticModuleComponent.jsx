@@ -9,17 +9,19 @@ export function SocraticModuleComponent() {
   const [dialogue, setDialogue] = useState([])
   const [answerInput, setAnswerInput] = useState('')
   const [isStarted, setIsStarted] = useState(false)
+  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleStart = async () => {
     if (!topic.trim() || isLoading) return
     setIsLoading(true)
+    setError(null)
     try {
       const firstQ = await startSocraticDialogue(topic)
       setDialogue([{ role: 'socratic', text: firstQ }])
       setIsStarted(true)
     } catch (err) {
-      alert(`Error starting Socratic dialogue: ${err.message}`)
+      setError(`Error starting Socratic dialogue: ${err.message}`)
     }
     setIsLoading(false)
   }
@@ -30,12 +32,13 @@ export function SocraticModuleComponent() {
     setAnswerInput('')
     setDialogue(prev => [...prev, { role: 'user', text: userText }])
     setIsLoading(true)
+    setError(null)
 
     try {
       const res = await submitSocraticAnswer(userText)
       setDialogue(prev => [...prev, { role: 'socratic', text: res.text, isSynthesis: res.isSynthesis }])
     } catch (err) {
-      alert(`Error submitting answer: ${err.message}`)
+      setError(`Error submitting answer: ${err.message}`)
     }
     setIsLoading(false)
   }
@@ -62,6 +65,13 @@ export function SocraticModuleComponent() {
           </p>
         </div>
       </div>
+
+      {/* Error Banner */}
+      {error && (
+        <div style={{ marginBottom: '1.25rem', padding: '0.75rem 1rem', borderRadius: '14px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', fontSize: '0.84rem', fontWeight: 600 }}>
+          ⚠️ {error}
+        </div>
+      )}
 
       {!isStarted ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '700px' }}>

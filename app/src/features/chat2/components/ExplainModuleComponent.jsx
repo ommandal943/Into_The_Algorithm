@@ -8,16 +8,18 @@ export function ExplainModuleComponent() {
   const [topic, setTopic] = useState('')
   const [level, setLevel] = useState('beginner')
   const [explanation, setExplanation] = useState('')
+  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleExplain = async () => {
     if (!topic.trim() || isLoading) return
     setIsLoading(true)
+    setError(null)
     try {
       const res = await explainConcept(topic, level)
       setExplanation(res)
     } catch (err) {
-      alert(`Error generating explanation: ${err.message}`)
+      setError(`Error generating explanation: ${err.message}`)
     }
     setIsLoading(false)
   }
@@ -87,6 +89,13 @@ export function ExplainModuleComponent() {
           </motion.button>
         </div>
       </div>
+
+      {/* Error Banner */}
+      {error && (
+        <div style={{ marginTop: '1.25rem', padding: '0.75rem 1rem', borderRadius: '14px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', fontSize: '0.84rem', fontWeight: 600 }}>
+          ⚠️ {error}
+        </div>
+      )}
 
       {/* Output */}
       {explanation && (

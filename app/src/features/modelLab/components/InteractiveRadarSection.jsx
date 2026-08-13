@@ -3,11 +3,12 @@ import { motion } from 'framer-motion'
 import { PieChart, Zap, Check } from 'lucide-react'
 
 export function InteractiveRadarSection({ evaluatedModels }) {
+  const defaultAlgoName = evaluatedModels?.[0]?.name || ''
+  const [selectedAlgoName, setSelectedAlgoName] = useState(defaultAlgoName)
+
   if (!evaluatedModels || !evaluatedModels.length) return null
 
   const topModels = evaluatedModels.slice(0, 4)
-  const [selectedAlgoName, setSelectedAlgoName] = useState(topModels[0].name)
-
   const activeModel = evaluatedModels.find(m => m.name === selectedAlgoName) || topModels[0]
   const radarData = activeModel.radar || { accuracy: 94, interpretability: 75, speed: 85, memory: 80, scalability: 90, robustness: 95 }
 

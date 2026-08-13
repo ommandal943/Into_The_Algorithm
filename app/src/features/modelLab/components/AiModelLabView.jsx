@@ -55,23 +55,43 @@ export default function AiModelLabView() {
     }, 400)
   }
 
+  const [uploadError, setUploadError] = useState(null)
+
   const handleFileUpload = (file) => {
     if (!file) return
+    setUploadError(null)
+
+    // File size safety check: Cap at 10MB
+    const MAX_FILE_SIZE = 10 * 1024 * 1024
+    if (file.size > MAX_FILE_SIZE) {
+      setUploadError(`File size exceeds 10MB limit (${(file.size / (1024 * 1024)).toFixed(1)}MB). Please upload a smaller dataset.`)
+      return
+    }
+
     setIsAnalyzing(true)
     setSelectedSampleId(null)
 
     const reader = new FileReader()
     reader.onload = (e) => {
-      const csvStr = e.target.result
-      const parsed = parseCSV(csvStr)
-      if (parsed) {
-        const ana = analyzeDataset(parsed.headers, parsed.rows, null)
-        setAnalysis(ana)
-        const tr = runAutoMlTraining(ana, whatIfState)
-        setTrainingResults(tr)
-      } else {
-        alert('Invalid CSV file format')
+      try {
+        const csvStr = e.target.result
+        const parsed = parseCSV(csvStr)
+        if (parsed && parsed.rows.length > 0) {
+          const ana = analyzeDataset(parsed.headers, parsed.rows, null)
+          setAnalysis(ana)
+          const tr = runAutoMlTraining(ana, whatIfState)
+          setTrainingResults(tr)
+        } else {
+          setUploadError('Invalid or empty CSV file format. Please ensure valid headers and data rows.')
+        }
+      } catch (err) {
+        setUploadError(`Failed to parse CSV file: ${err.message}`)
+      } finally {
+        setIsAnalyzing(false)
       }
+    }
+    reader.onerror = () => {
+      setUploadError('Error reading dataset file from device.')
       setIsAnalyzing(false)
     }
     reader.readAsText(file)
@@ -111,6 +131,12 @@ export default function AiModelLabView() {
           selectedSampleId={selectedSampleId}
           isAnalyzing={isAnalyzing}
         />
+
+        {uploadError && (
+          <div style={{ margin: '1rem 0 1.5rem', padding: '0.85rem 1.25rem', borderRadius: '16px', background: 'rgba(239, 68, 68, 0.14)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#fca5a5', fontSize: '0.88rem', fontWeight: 600 }}>
+            ⚠️ Dataset Upload Error: {uploadError}
+          </div>
+        )}
 
         {/* DATASET INTELLIGENCE & AUTOMATED ANALYSIS */}
         {analysis && (

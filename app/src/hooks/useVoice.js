@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 
 const SOUND_COMPLETION = '/audio/7_crore.mp3'
 const SOUND_CORRECT = '/audio/kya_baat_hai.opus'
@@ -21,6 +21,12 @@ export function useVoice() {
       activeAudioRef.current = null
     }
   }, [])
+
+  useEffect(() => {
+    return () => {
+      stopActiveAudio()
+    }
+  }, [stopActiveAudio])
 
   const playSound = useCallback(
     (audioRef, soundUrl, volume = 0.95) => {

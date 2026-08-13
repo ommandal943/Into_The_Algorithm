@@ -8,17 +8,19 @@ export function NotesModuleComponent() {
   const [topic, setTopic] = useState('')
   const [options, setOptions] = useState({ math: true, code: true, quiz: false })
   const [notes, setNotes] = useState('')
+  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleGenerate = async () => {
     if (!topic.trim() || isLoading) return
     setIsLoading(true)
+    setError(null)
     try {
       const res = await generateNotes(topic, options)
       setNotes(res)
     } catch (err) {
-      alert(`Error generating study notes: ${err.message}`)
+      setError(`Error generating study notes: ${err.message}`)
     }
     setIsLoading(false)
   }
@@ -100,6 +102,13 @@ export function NotesModuleComponent() {
           </motion.button>
         </div>
       </div>
+
+      {/* Error Banner */}
+      {error && (
+        <div style={{ marginTop: '1.25rem', padding: '0.75rem 1rem', borderRadius: '14px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', fontSize: '0.84rem', fontWeight: 600 }}>
+          ⚠️ {error}
+        </div>
+      )}
 
       {/* Output */}
       {notes && (

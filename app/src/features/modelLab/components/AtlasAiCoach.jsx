@@ -113,6 +113,7 @@ CRITICAL RULES:
         next[next.length - 1] = { sender: 'atlas', text: `⚠️ ATLAS Error: ${err.message}` }
         return next
       })
+    } finally {
       setIsLoading(false)
     }
   }

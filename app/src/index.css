@@ -107,6 +107,7 @@ main {
   top: 0;
   z-index: 30;
   background: rgba(10, 14, 26, 0.88);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
   backdrop-filter: blur(24px) saturate(1.5);
   border-bottom: 1px solid transparent;
   border-image: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.4), rgba(167, 139, 250, 0.4), rgba(244, 114, 182, 0.3), transparent) 1;
@@ -210,6 +211,7 @@ main {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: rgba(17, 24, 39, 0.65);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   text-decoration: none;
   color: inherit;
@@ -1105,6 +1107,7 @@ main {
   border-radius: 999px;
   background: rgba(10, 14, 26, 0.85);
   border: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   font-size: 0.78rem;
   color: var(--muted);
@@ -1136,8 +1139,8 @@ main {
 /* --- Shared Glass Container & Badges --- */
 .glass {
   background: rgba(17, 24, 39, 0.65);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
@@ -1278,6 +1281,7 @@ main {
   background: linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(167, 139, 250, 0.12), rgba(244, 114, 182, 0.12));
   border: 1px solid rgba(167, 139, 250, 0.35);
   box-shadow: 0 0 30px rgba(167, 139, 250, 0.2);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   margin-bottom: 1.5rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -1369,6 +1373,7 @@ main {
   color: var(--muted);
   border: 1px solid rgba(167, 139, 250, 0.25);
   background: rgba(10, 14, 26, 0.65);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
   white-space: nowrap;
@@ -1475,6 +1480,7 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
@@ -1714,6 +1720,7 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
@@ -2332,6 +2339,7 @@ main {
 .line-num {
   color: rgba(255, 255, 255, 0.25);
   text-align: right;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -2746,6 +2754,7 @@ main {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   font-size: 0.85rem;
   font-weight: 600;
@@ -2780,6 +2789,7 @@ main {
   border-radius: 16px;
   background: rgba(17, 24, 39, 0.6);
   border: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   font-size: 0.85rem;
   max-width: 800px;
@@ -2816,6 +2826,7 @@ main {
   margin: 3rem 0;
   border: 1px solid rgba(167, 139, 250, 0.25);
   background: rgba(17, 24, 39, 0.7);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
 }
@@ -2965,6 +2976,7 @@ main {
   margin: 2.5rem 0 3rem;
   background: rgba(10, 14, 26, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   position: relative;
   overflow: hidden;
@@ -3036,6 +3048,7 @@ main {
   margin: 3.5rem 0;
   border: 1px solid rgba(167, 139, 250, 0.3);
   background: radial-gradient(circle at top center, rgba(139, 92, 246, 0.12) 0%, rgba(10, 14, 26, 0.85) 70%);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
 }
@@ -3369,6 +3382,7 @@ html.lenis body {
   z-index: 99998;
   opacity: 0;
   will-change: transform, width, height;
+  -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
 }
@@ -3450,6 +3464,187 @@ html.lenis body {
   background: rgba(10, 14, 26, 0.92);
   border: 1px solid rgba(96, 165, 250, 0.35);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(96, 165, 250, 0.25);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 90;
+  opacity: 0;
+  transform: translateY(20px) scale(0.85);
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.floating-back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.floating-back-to-top:hover {
+  border-color: rgba(167, 139, 250, 0.6);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(167, 139, 250, 0.4);
+}
+
+.floating-back-to-top:active {
+  transform: translateY(1px) scale(0.96);
+}
+
+.progress-ring-svg {
+  position: absolute;
+  inset: -2px;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.progress-ring-circle-bg {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.progress-ring-circle-val {
+  stroke: url(#ring-gradient);
+  stroke: #60a5fa;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.back-to-top-arrow {
+  color: var(--purple-2);
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Tactile Button Active States */
+.modern-btn-primary:active,
+.modern-btn-secondary:active,
+.modern-btn-demo:active,
+.btn:active,
+.btn-primary:active {
+  transform: scale(0.97) !important;
+  transition: transform 0.1s ease-out !important;
+}
+
+/* ——— AAA ML Quest Campaign Styles ——— */
+.aaa-campaign-wrap {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+}
+
+.aaa-campaign-hero {
+  padding: 2rem 2.2rem;
+  border-radius: 24px;
+  background: rgba(20, 10, 34, 0.7);
+  border: 1px solid rgba(196, 160, 255, 0.25);
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-title-group h1 {
+  font-size: 2.2rem;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.text-gold {
+  color: var(--gold, #fbbf24);
+}
+
+.text-yellow {
+  color: #fde047;
+}
+
+.campaign-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(196, 160, 255, 0.15);
+}
+
+.camp-stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(196, 160, 255, 0.15);
+  border-radius: 16px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted, #a898c4);
+  text-transform: uppercase;
+}
+
+.stat-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-top: 0.2rem;
+  font-family: var(--font-display);
+}
+
+.stat-val .sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.camp-progress-rail {
+  height: 6px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.camp-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.campaign-controls {
+  padding: 1.15rem 1.5rem;
+  border-radius: 20px;
+  background: rgba(20, 10, 34, 0.6);
+  border: 1px solid rgba(196, 160, 255, 0.2);
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.controls-search-row {
+  width: 100%;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(10, 6, 18, 0.8);
+  border: 1px solid rgba(196, 160, 255, 0.25);
+  border-radius: 14px;
+  padding: 0.7rem 1.1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-box:focus-within {
+  border-color: rgba(167, 139, 250, 0.6);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.25);
+}
+.floating-back-to-top {
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
@@ -3648,7 +3843,13 @@ html.lenis body {
   gap: 0.5rem;
   overflow-x: auto;
   padding-bottom: 0.25rem;
-  scrollbar-width: thin;
+  @supports (scrollbar-width: thin) {
+    scrollbar-width: thin;
+  }
+}
+
+.chapter-tabs-scroll::-webkit-scrollbar {
+  height: 6px;
 }
 
 .chapter-tab-pill {
@@ -3876,7 +4077,9 @@ html.lenis body {
   display: flex;
   gap: 0.45rem;
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
+  @supports (scrollbar-width: none) {
+    scrollbar-width: none; /* Firefox */
+  }
   -ms-overflow-style: none; /* IE/Edge */
   padding-bottom: 0.2rem;
 }
@@ -4152,8 +4355,8 @@ html.lenis body {
 
 .glass-pill {
   background: rgba(10, 15, 30, 0.65) !important;
-  backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
 }
@@ -4222,8 +4425,8 @@ html.lenis body {
   padding: 0.45rem 1.1rem;
   border-radius: 999px;
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(251, 191, 36, 0.4);
   box-shadow: 0 0 25px rgba(251, 191, 36, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   color: #fbbf24;
@@ -4279,6 +4482,7 @@ html.lenis body {
   border: 1px solid rgba(56, 189, 248, 0.3) !important;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
   background: rgba(10, 15, 30, 0.75) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
   backdrop-filter: blur(16px) !important;
 }
 
@@ -4363,8 +4567,8 @@ html.lenis body {
   padding: 2.5rem;
   border-radius: 28px;
   background: rgba(8, 14, 28, 0.82) !important;
-  backdrop-filter: blur(40px) saturate(190%) !important;
   -webkit-backdrop-filter: blur(40px) saturate(190%) !important;
+  backdrop-filter: blur(40px) saturate(190%) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: 0 40px 100px -10px rgba(0, 0, 0, 0.9), 0 0 80px -15px rgba(56, 189, 248, 0.25) !important;
   display: flex;
@@ -4649,6 +4853,7 @@ html.lenis body {
   gap: 0.45rem;
   color: #94a3b8;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -5114,8 +5319,8 @@ html.lenis body {
   width: 240px;
   border-radius: 20px;
   background: rgba(14, 19, 36, 0.92);
-  backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
   padding: 0.75rem;
@@ -6276,6 +6481,7 @@ html.lenis body {
   padding: 1.15rem;
   border-radius: 18px;
   background: rgba(14,19,36,0.95);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 16px 40px rgba(0,0,0,0.6);
@@ -6984,8 +7190,8 @@ html.lenis body {
   padding: 0.75rem 1.5rem;
   border-radius: 22px;
   background: rgba(14,19,36,0.8);
-  backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
   border: 1px solid rgba(255,255,255,0.08);
   box-shadow: 0 12px 40px rgba(0,0,0,0.5);
 }
@@ -7257,8 +7463,8 @@ html.lenis body {
 /* Standard SaaS Card */
 .saas-card {
   background: var(--saas-card-bg);
-  backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
   border: 1px solid var(--saas-card-border);
   border-radius: var(--saas-radius);
   box-shadow: var(--saas-shadow);
@@ -7809,7 +8015,13 @@ html.lenis body {
   display: flex;
   gap: 0.4rem;
   overflow-x: auto;
-  scrollbar-width: none;
+  @supports (scrollbar-width: thin) {
+    scrollbar-width: thin;
+  }
+}
+
+.toolbar-pills-scroll::-webkit-scrollbar {
+  height: 6px;
 }
 
 .saas-toolbar-pill {
@@ -7870,6 +8082,7 @@ html.lenis body {
   color: #fff;
   font-size: 0.8rem;
   font-weight: 600;
+  -webkit-appearance: none;
   appearance: none;
   padding-right: 1.1rem;
   cursor: pointer;
@@ -8148,6 +8361,7 @@ html.lenis body {
   inset: 0;
   z-index: 100;
   background: rgba(4, 5, 10, 0.85);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   display: grid;
   place-items: center;
@@ -8469,8 +8683,14 @@ html.lenis body {
 /* 52-Week Heatmap */
 .heatmap-matrix-scroll {
   overflow-x: auto;
-  scrollbar-width: thin;
+  @supports (scrollbar-width: thin) {
+    scrollbar-width: thin;
+  }
   padding-bottom: 0.5rem;
+}
+
+.heatmap-matrix-scroll::-webkit-scrollbar {
+  height: 6px;
 }
 
 .heatmap-matrix {
@@ -8991,6 +9211,7 @@ html.lenis body {
   color: var(--text);
   font-size: 0.86rem;
   font-weight: 600;
+  -webkit-appearance: none;
   appearance: none;
   padding-right: 1.25rem;
   cursor: pointer;
@@ -9031,8 +9252,14 @@ html.lenis body {
 
 .pills-scroll-container {
   overflow-x: auto;
-  scrollbar-width: thin;
+  @supports (scrollbar-width: thin) {
+    scrollbar-width: thin;
+  }
   padding-bottom: 0.25rem;
+}
+
+.pills-scroll-container::-webkit-scrollbar {
+  height: 6px;
 }
 
 .pills-scroll-track {
@@ -9392,190 +9619,8 @@ html.lenis body {
   inset: 0;
   z-index: 100;
   background: rgba(8, 4, 16, 0.85);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
-  display: grid;
-  place-items: center;
-  padding: 1.5rem;
-}
-
-.badge-detail-modal {
-  width: min(520px, 100%);
-  background: rgba(22, 12, 38, 0.95);
-  border: 1px solid rgba(196, 160, 255, 0.3);
-  border-radius: 28px;
-  padding: 2.25rem;
-  position: relative;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-}
-
-.modal-close-btn {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: var(--muted);
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-.modal-top-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-}
-
-.modal-hero-icon-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-.large-badge-portal {
-  width: 96px;
-  height: 96px;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid;
-  display: grid;
-  place-items: center;
-  margin-bottom: 0.85rem;
-}
-
-.large-emoji {
-  font-size: 3.5rem;
-}
-
-.modal-rarity-pill {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid;
-}
-
-.modal-body-content {
-  text-align: center;
-}
-
-.modal-body-content h2 {
-  font-size: 1.6rem;
-  font-family: var(--font-display);
-  margin: 0 0 0.2rem;
-}
-
-.modal-category {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin: 0 0 1rem;
-}
-
-.modal-desc {
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: var(--text);
-  margin-bottom: 1.5rem;
-}
-
-.modal-rewards-box {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(196, 160, 255, 0.15);
-  border-radius: 16px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-
-  text-align: left;
-}
-
-.box-title {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 0.6rem;
-}
-
-.modal-rewards-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-.reward-card-mini {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 0.6rem 0.85rem;
-  border-radius: 12px;
-  font-size: 0.84rem;
-  font-weight: 600;
-}
-
-.modal-actions-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 1.5rem;
-}
-
-.modal-showcase-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.75rem 1.25rem;
-  border-radius: 14px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #a855f7, #6d28d9);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modal-showcase-btn.active {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-}
-
-/* ==========================================================================
-   📱 ULTRA-FLUID MOBILE & TABLET RESPONSIVE DESIGN SYSTEM
-   Enforces slick, touch-friendly layouts for screens <= 1024px, 768px, 480px.
-   Desktop layout (> 1024px) remains 100% unchanged.
-   ========================================================================== */
-
-/* 1. Global Touch & Viewport Anti-Overflow Rules */
-@media (max-width: 1024px) {
-  html, body {
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-  }
-
-  main, .hub-main, .quest-main {
-    width: 100% !important;
-    max-width: 100vw !important;
-    padding: 1rem 0.85rem 4rem !important;
-    box-sizing: border-box !important;
-  }
 }
 
 /* 2. Responsive Navigation Bar (TopBar & TopNav) */
@@ -9592,11 +9637,12 @@ html.lenis body {
     display: flex !important;
     align-items: center !important;
     overflow-x: auto !important;
-    scrollbar-width: none !important;
+    @supports (scrollbar-width: none) {
+      scrollbar-width: none !important;
+    }
     -ms-overflow-style: none !important;
     gap: 0.4rem !important;
     padding: 0.25rem 0.1rem 0.4rem !important;
-    -webkit-overflow-scrolling: touch !important;
   }
 
   .topnav::-webkit-scrollbar {
@@ -9649,7 +9695,7 @@ html.lenis body {
 @media (max-width: 960px) {
   .cinematic-auth-container {
     flex-direction: column !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     padding: 1rem 0.75rem 3rem !important;
     overflow-y: auto !important;
   }

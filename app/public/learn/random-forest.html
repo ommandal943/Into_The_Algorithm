@@ -85,6 +85,7 @@
             padding: 0.25rem 1.25rem;
             cursor: pointer;
             transition: all 0.15s ease;
+            -webkit-user-select: none;
             user-select: none;
             border-left: 3px solid transparent;
         }
@@ -253,6 +254,7 @@
             padding: 0.4rem 1rem;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             pointer-events: none;
             display: flex;
@@ -270,6 +272,7 @@
             border-radius: var(--radius);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
         }
         .control-block h3 {
@@ -798,7 +801,7 @@
                                 <span>Number of Trees ($N_{\text{estimators}}$)</span>
                                 <span class="slider-val" id="valNumTrees">15</span>
                             </div>
-                            <input type="range" id="sliderNumTrees" min="1" max="50" value="15">
+                            <input aria-label="slider Num Trees" title="slider Num Trees" type="range" id="sliderNumTrees" min="1" max="50" value="15">
                         </div>
 
                         <!-- Max Tree Depth Slider -->
@@ -807,7 +810,7 @@
                                 <span>Max Tree Depth ($D_{\text{max}}$)</span>
                                 <span class="slider-val" id="valMaxDepth">5</span>
                             </div>
-                            <input type="range" id="sliderMaxDepth" min="1" max="10" value="5">
+                            <input aria-label="slider Max Depth" title="slider Max Depth" type="range" id="sliderMaxDepth" min="1" max="10" value="5">
                         </div>
 
                         <!-- Feature Subsampling Ratio -->
@@ -816,7 +819,7 @@
                                 <span>Feature Subsampling ($m / p$)</span>
                                 <span class="slider-val" id="valMaxFeatures">70%</span>
                             </div>
-                            <input type="range" id="sliderMaxFeatures" min="30" max="100" step="10" value="70">
+                            <input aria-label="slider Max Features" title="slider Max Features" type="range" id="sliderMaxFeatures" min="30" max="100" step="10" value="70">
                         </div>
 
                         <!-- Split Criterion -->
@@ -833,7 +836,7 @@
                         <!-- Bootstrap Resampling Toggle -->
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
                             <span style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">Bootstrap Aggregating (Bagging)</span>
-                            <input type="checkbox" id="checkBootstrap" checked style="accent-color:#34d399; width:18px; height:18px; cursor:pointer;">
+                            <input aria-label="check Bootstrap" title="check Bootstrap" type="checkbox" id="checkBootstrap" checked style="accent-color:#34d399; width:18px; height:18px; cursor:pointer;">
                         </div>
 
                         <!-- Single Tree vs Ensemble Selector -->

@@ -84,6 +84,7 @@
             padding: 0.25rem 1.25rem;
             cursor: pointer;
             transition: all 0.15s ease;
+            -webkit-user-select: none;
             user-select: none;
             border-left: 3px solid transparent;
         }
@@ -252,6 +253,7 @@
             padding: 0.4rem 1rem;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             pointer-events: none;
             display: flex;
@@ -269,6 +271,7 @@
             border-radius: var(--radius);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            -webkit-backdrop-filter: blur(16px);
             backdrop-filter: blur(16px);
         }
         .control-block h3 {
@@ -716,7 +719,7 @@
                                 <span>Epsilon Radius ($\varepsilon$)</span>
                                 <span class="slider-val" id="valEps">45px</span>
                             </div>
-                            <input type="range" id="sliderEps" min="15" max="100" value="45">
+                            <input aria-label="slider Eps" title="slider Eps" type="range" id="sliderEps" min="15" max="100" value="45">
                         </div>
 
                         <!-- MinPts Threshold Slider -->
@@ -725,13 +728,13 @@
                                 <span>MinPts Threshold</span>
                                 <span class="slider-val" id="valMinPts">4</span>
                             </div>
-                            <input type="range" id="sliderMinPts" min="2" max="10" value="4">
+                            <input aria-label="slider Min Pts" title="slider Min Pts" type="range" id="sliderMinPts" min="2" max="10" value="4">
                         </div>
 
                         <!-- Draw Epsilon Circles Checkbox -->
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.25rem;">
                             <span style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">Draw Core Epsilon Circles ($\varepsilon$)</span>
-                            <input type="checkbox" id="checkCircles" checked style="accent-color:#fbbf24; width:18px; height:18px; cursor:pointer;">
+                            <input aria-label="check Circles" title="check Circles" type="checkbox" id="checkCircles" checked style="accent-color:#fbbf24; width:18px; height:18px; cursor:pointer;">
                         </div>
                     </div>
                 </div>
